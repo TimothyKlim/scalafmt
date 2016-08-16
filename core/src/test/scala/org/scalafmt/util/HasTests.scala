@@ -10,6 +10,7 @@ import org.scalafmt.FormatEvent.CreateFormatOps
 import org.scalafmt.FormatEvent.Enqueue
 import org.scalafmt.FormatEvent.Explored
 import org.scalafmt.FormatEvent.VisitToken
+import org.scalafmt.IndentOperator
 import org.scalafmt.ScalafmtRunner
 import org.scalafmt.Scalafmt
 import org.scalafmt.ScalafmtStyle
@@ -129,12 +130,8 @@ trait HasTests extends FunSuiteLike with FormatAssertions {
           alignByArrowEnumeratorGenerator = true
         )
       case "noIndentOperators" =>
-        ScalafmtStyle.unitTest80.copy(
-          unindentTopLevelOperators = true,
-          indentOperatorsIncludeFilter =
-            ScalafmtStyle.indentOperatorsIncludeAkka,
-          indentOperatorsExcludeFilter =
-            ScalafmtStyle.indentOperatorsExcludeAkka)
+        ScalafmtStyle.unitTest80.copy(unindentTopLevelOperators = true,
+                                      indentOperator = IndentOperator.akka)
       case "unicode" =>
         ScalafmtStyle.unitTest80.copy(
           rewriteTokens = Map(

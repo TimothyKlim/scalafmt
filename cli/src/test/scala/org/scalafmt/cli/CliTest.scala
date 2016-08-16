@@ -1,13 +1,18 @@
 package org.scalafmt.cli
 
+import org.scalafmt.ConfigurationOptions
+import org.scalafmt.util.LoggerOps._
+
 import java.io.File
 import java.nio.file.Files
 
 import org.scalafmt.AlignToken
 import org.scalafmt.Error.MisformattedFile
+import org.scalafmt.IndentOperator
 import org.scalafmt.ScalafmtOptimizer
 import org.scalafmt.ScalafmtRunner
 import org.scalafmt.ScalafmtStyle
+import org.scalafmt.yaml.Parser
 import org.scalafmt.util.DiffAssertions
 import org.scalafmt.util.FileOps
 import org.scalatest.FunSuite
@@ -33,8 +38,7 @@ class CliTest extends FunSuite with DiffAssertions {
       "=>" -> "⇒",
       "<-" -> "←"
     ),
-    indentOperatorsIncludeFilter = ScalafmtStyle.indentOperatorsIncludeAkka,
-    indentOperatorsExcludeFilter = ScalafmtStyle.indentOperatorsExcludeAkka,
+    indentOperator = IndentOperator.akka,
     reformatDocstrings = false,
     maxColumn = 99,
     alignMixedOwners = true,
@@ -218,4 +222,10 @@ class CliTest extends FunSuite with DiffAssertions {
     assertNoDiff(obtained1, expected1)
     assertNoDiff(obtained2, expected2)
   }
+}
+
+sealed abstract class Docstring
+object Docstring {
+  case object Scaladoc extends Docstring
+  case object Javadoc extends Docstring
 }

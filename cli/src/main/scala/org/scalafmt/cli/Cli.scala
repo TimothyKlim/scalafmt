@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import org.scalafmt.AlignToken
 import org.scalafmt.Error.MisformattedFile
 import org.scalafmt.FormatResult
+import org.scalafmt.IndentOperator
 import org.scalafmt.Scalafmt
 import org.scalafmt.ScalafmtOptimizer
 import org.scalafmt.ScalafmtRunner
@@ -157,6 +158,9 @@ object Cli {
         c.copy(
           runner = c.runner.copy(parser = scala.meta.parsers.Parse.parseStat))
       } text "parse the input as a statement instead of compilation unit"
+      opt[Boolean]("formatSbtFiles") action { (b, c) =>
+        c.copy(sbtFiles = b)
+      } text s"If true, formats .sbt files as well."
       opt[Unit]("bestEffortInDeeplyNestedCode") action { (_, c) =>
         c.copy(runner = c.runner.copy(
           optimizer = ScalafmtOptimizer.default.copy(bestEffortEscape = true)))
@@ -188,9 +192,6 @@ object Cli {
       opt[Int]("continuationIndentDefnSite") action { (n, c) =>
         c.copy(style = c.style.copy(continuationIndentDefnSite = n))
       } text s"See ScalafmtStyle scaladoc."
-      opt[Boolean]("formatSbtFiles") action { (b, c) =>
-        c.copy(sbtFiles = b)
-      } text s"If true, formats .sbt files as well."
       opt[Boolean]("reformatComments") action { (b, c) =>
         c.copy(style = c.style.copy(reformatDocstrings = b))
       } text s"See ScalafmtStyle scaladoc."
@@ -246,23 +247,20 @@ object Cli {
         c.copy(style = c.style.copy(binPackImportSelectors = bool))
       } text s"See ScalafmtConfig scaladoc."
       opt[String]("indentOperatorsIncludeFilter") action { (str, c) =>
-        c.copy(style = c.style.copy(indentOperatorsIncludeFilter = str.r))
+        c.copy(
+          style = c.style.copy(
+            indentOperator = c.style.indentOperator.copy(includeFilter = str)))
       } text s"See ScalafmtConfig scaladoc."
       opt[String]("indentOperatorsExcludeFilter") action { (str, c) =>
-        c.copy(style = c.style.copy(indentOperatorsExcludeFilter = str.r))
+        c.copy(
+          style = c.style.copy(
+            indentOperator = c.style.indentOperator.copy(excludeFilter = str)))
       } text s"See ScalafmtConfig scaladoc."
       opt[Boolean]("indentOperators") action { (bool, c) =>
-        val (include, exclude) = {
-          if (bool)
-            (ScalafmtStyle.indentOperatorsIncludeDefault,
-             ScalafmtStyle.indentOperatorsExcludeDefault)
-          else
-            (ScalafmtStyle.indentOperatorsIncludeAkka,
-             ScalafmtStyle.indentOperatorsExcludeAkka)
-        }
-        c.copy(
-          style = c.style.copy(indentOperatorsIncludeFilter = include,
-                               indentOperatorsExcludeFilter = exclude))
+        val x =
+          if (bool) IndentOperator.default
+          else IndentOperator.akka
+        c.copy(style = c.style.copy(indentOperator = x))
       } text s"See ScalafmtConfig scaladoc."
       opt[Seq[String]]("rewriteTokens") action { (str, c) =>
         val rewriteTokens = Map(gimmeStrPairs(str): _*)
