@@ -19,6 +19,7 @@ import org.scalafmt.ScalafmtStyle
 import org.scalafmt.ScalafmtStyle.LineEndings
 import org.scalafmt.Versions
 import org.scalafmt.macros.Macros
+import org.scalafmt.rewrite.Rewrite
 import org.scalafmt.util.FileOps
 import org.scalafmt.util.LoggerOps
 import scopt.OptionParser
@@ -100,6 +101,13 @@ object Cli {
         s"Unknown style name $styleName. Expected one of ${ScalafmtStyle.activeStyles.keys}")
     })
   }
+  implicit val rewriteReads: Read[Rewrite] = Read.reads { styleName =>
+    Rewrite.name2rewrite.getOrElse(styleName, {
+      throw new IllegalArgumentException(
+        s"Unknown style name $styleName. Expected one of: ${Rewrite.available}")
+    })
+  }
+
   val dialectsByName: Map[String, Dialect] = {
     import scala.meta.dialects._
     LoggerOps
@@ -274,6 +282,9 @@ object Cli {
           style = c.style.copy(indentOperatorsIncludeFilter = include,
                                indentOperatorsExcludeFilter = exclude))
       } text s"See ScalafmtConfig scaladoc."
+      opt[Seq[Rewrite]]("rewriteRules") action { (rewrites, c) =>
+        c.copy(runner = c.runner.copy(rewrites = rewrites))
+      } text s"""(experimental) Run rewrite rules before formatting, available options: ${Rewrite.available}."""
       opt[Seq[String]]("rewriteTokens") action { (str, c) =>
         val rewriteTokens = Map(gimmeStrPairs(str): _*)
         c.copy(style = c.style.copy(rewriteTokens = rewriteTokens))
@@ -289,7 +300,8 @@ object Cli {
         c.copy(style = c.style.copy(keepSelectChainLineBreaks = bool))
       } text s"See ScalafmtConfig scaladoc."
       opt[Boolean]("alwaysNewlineBeforeLambdaParameters") action { (bool, c) =>
-        c.copy(style = c.style.copy(alwaysNewlineBeforeLambdaParameters = bool))
+        c.copy(
+          style = c.style.copy(alwaysNewlineBeforeLambdaParameters = bool))
       } text s"See ScalafmtConfig scaladoc."
       opt[Seq[String]]("alignTokens") action { (tokens, c) =>
         val alignsTokens =

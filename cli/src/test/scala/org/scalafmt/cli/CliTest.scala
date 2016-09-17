@@ -8,13 +8,15 @@ import org.scalafmt.Error.MisformattedFile
 import org.scalafmt.ScalafmtOptimizer
 import org.scalafmt.ScalafmtRunner
 import org.scalafmt.ScalafmtStyle
-import org.scalafmt.ScalafmtStyle.{PreserveLineEndings, UnixLineEndings, WindowsLineEndings}
+import org.scalafmt.ScalafmtStyle.PreserveLineEndings
+import org.scalafmt.ScalafmtStyle.UnixLineEndings
+import org.scalafmt.ScalafmtStyle.WindowsLineEndings
+import org.scalafmt.rewrite.SortImportSelectors
 import org.scalafmt.util.DiffAssertions
 import org.scalafmt.util.FileOps
 import org.scalatest.FunSuite
 
 class CliTest extends FunSuite with DiffAssertions {
-  import org.scalafmt.util.LoggerOps._
   val unformatted = """
                       |object a    extends   App {
                       |pr(
@@ -50,6 +52,7 @@ class CliTest extends FunSuite with DiffAssertions {
   val expectedConfig = Cli.Config.default.copy(
     debug = true,
     runner = ScalafmtRunner.statement.copy(
+      rewrites = Seq(SortImportSelectors),
       optimizer = ScalafmtOptimizer.default.copy(bestEffortEscape = true)),
     style = expectedStyle,
     files = Seq(new File("foo")),
@@ -69,6 +72,8 @@ class CliTest extends FunSuite with DiffAssertions {
     "false",
     "--rewriteTokens",
     "=>;⇒,<-;←",
+    "--rewriteRules",
+    "SortImportSelectors",
     "--statement",
     "--bestEffortInDeeplyNestedCode",
     "--debug",

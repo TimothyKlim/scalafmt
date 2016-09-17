@@ -8,6 +8,7 @@ import org.scalafmt.FormatEvent.CompleteFormat
 import org.scalafmt.FormatEvent.Enqueue
 import org.scalafmt.FormatEvent.Explored
 import org.scalafmt.FormatEvent.VisitToken
+import org.scalafmt.rewrite.Rewrite
 import org.scalafmt.util.LoggerOps
 
 /**
@@ -23,7 +24,8 @@ case class ScalafmtRunner(debug: Boolean,
                           parser: Parse[_ <: Tree],
                           optimizer: ScalafmtOptimizer,
                           maxStateVisits: Int,
-                          dialect: Dialect) {
+                          dialect: Dialect,
+                          rewrites: Seq[Rewrite]) {
 
   def withParser(newParser: Parse[_ <: Tree]): ScalafmtRunner =
     this.copy(parser = newParser)
@@ -40,7 +42,8 @@ object ScalafmtRunner {
                                parser = scala.meta.parsers.Parse.parseSource,
                                optimizer = ScalafmtOptimizer.default,
                                maxStateVisits = 1000000,
-                               scala.meta.dialects.Scala211)
+                               scala.meta.dialects.Scala211,
+                               rewrites = Seq.empty[Rewrite])
 
   /**
     * Same as [[default]], except formats the input as a statement/expression.

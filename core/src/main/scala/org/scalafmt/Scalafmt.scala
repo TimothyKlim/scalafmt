@@ -1,14 +1,17 @@
 package org.scalafmt
 
+import scala.meta.Input.stringToInput
+import scala.meta.inputs.Input
+import scala.util.control.NonFatal
+
+import org.scalafmt.Error.Incomplete
 import org.scalafmt.FormatEvent.CreateFormatOps
+import org.scalafmt.ScalafmtStyle.PreserveLineEndings
+import org.scalafmt.ScalafmtStyle.WindowsLineEndings
 import org.scalafmt.internal.BestFirstSearch
 import org.scalafmt.internal.FormatOps
 import org.scalafmt.internal.FormatWriter
-import scala.util.control.NonFatal
-import scala.meta.Input.stringToInput
-
-import org.scalafmt.Error.Incomplete
-import org.scalafmt.ScalafmtStyle.{PreserveLineEndings, WindowsLineEndings}
+import org.scalafmt.rewrite.Rewrite
 
 object Scalafmt {
 
@@ -40,7 +43,8 @@ object Scalafmt {
         } else {
           code
         }
-        val tree = new scala.meta.XtensionParseInputLike(unixCode)
+        val toParse = Rewrite(Input.String(unixCode), runner.rewrites)
+        val tree = new scala.meta.XtensionParseInputLike(toParse)
           .parse(stringToInput, runner.parser, runner.dialect)
           .get
         val formatOps = new FormatOps(tree, style, runner)

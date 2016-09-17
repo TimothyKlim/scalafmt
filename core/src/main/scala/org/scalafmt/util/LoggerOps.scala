@@ -58,6 +58,8 @@ object LoggerOps {
             |""".stripMargin
   }
 
+  def stripTrailingSpace(s: String): String = s.replaceAll("\\s+\n", "\n")
+
   def reveal(s: String): String = s.map {
     case '\n' => '¶'
     case ' ' => '∙'
