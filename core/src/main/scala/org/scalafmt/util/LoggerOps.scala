@@ -14,7 +14,7 @@ import sourcecode.Text
   * Debugging utility.
   */
 object LoggerOps {
-  val logger = PrintlnLogger
+  val logger = debug
 
   // TODO(olafur) parameterize
   def name2style[T](styles: Text[T]*): Map[String, T] =

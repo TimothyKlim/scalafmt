@@ -1,14 +1,17 @@
 package org.scalafmt.cli
 
+import io.circe.Decoder
 import org.scalafmt.AlignToken
 import org.scalafmt.IndentOperator
 import org.scalafmt.ScalafmtOptimizer
 import org.scalafmt.ScalafmtRunner
 import org.scalafmt.ScalafmtStyle
+import org.scalafmt.util.debug
 import org.scalatest.FunSuite
 
 class YamlSpec extends FunSuite {
-  val input = """
+  val input =
+    """
 # Runner settings.
 formatSbtFiles: true
 
@@ -116,5 +119,32 @@ spaceBeforeContextBoundColon: true
       """.stripMargin
     val nested = ConfigurationOptionsParser.parse(config).valueOr(x => throw x)
     assert(nested.maxColumn.contains(40))
+  }
+
+  test("error messages") {
+
+    import io.circe.generic.semiauto._
+    import io.circe.parser._
+
+    case class Foo(col: Option[Int])
+
+    implicit val d: Decoder[Foo] = deriveDecoder[Foo].validate(x => {
+      println(x.fields)
+      val valid = Set("col")
+      x.fields.exists(x => x.forall(valid.contains))
+    }, "error")
+    for {
+      json <- parse("""|
+                       |{
+                       |  "cl": 2,
+                       |  "nested": {
+                       |    "k": 66
+                       |  }
+                       |}
+                       |""".stripMargin)
+    } yield {
+      debug.elem(json)
+    }
+
   }
 }
