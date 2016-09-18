@@ -152,22 +152,14 @@ lazy val macros = project
     )
   )
 
-val circeVersion = "0.5.1"
-
 lazy val cli = project
   .settings(allSettings)
   .settings(
     moduleName := "scalafmt-cli",
     mainClass in assembly := Some("org.scalafmt.cli.Cli"),
     libraryDependencies ++= Seq(
-      "io.circe" %% "circe-core",
-      "io.circe" %% "circe-generic",
-      "io.circe" %% "circe-parser"
-    ).map(_ % circeVersion),
-    libraryDependencies ++= Seq(
       "com.github.scopt" %% "scopt" % "3.3.0",
-      "eu.unicredit" %% "shocon" % "0.1.2",
-      "com.chuusai" %% "shapeless" % "2.3.1"
+      "eu.unicredit" %% "shocon" % "0.1.2"
     )
   )
   .dependsOn(core % "compile->compile;test->test")
