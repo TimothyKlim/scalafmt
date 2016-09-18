@@ -1,12 +1,12 @@
-package org.scalafmt.config
+package org.scalafmt.hocon
 
 import scala.util.control.NonFatal
 
 import com.typesafe.config.Config
 import org.scalafmt.Error
 
-class HoconOps(config: Config) {
-  def read[T](path: String, fallback: T)(implicit ev: HoconReader[T]): T = {
+class HoconOps(val config: Config) {
+  def read[T](path: String, fallback: T)(implicit ev: HoconFieldReader[T]): T = {
     try {
       if (config.hasPath(path)) ev.read(config, path)
       else fallback

@@ -2,6 +2,7 @@ package org.scalafmt
 
 import scala.util.matching.Regex
 
+import org.scalafmt.util.HasStringKeys
 import org.scalafmt.util.LoggerOps
 import org.scalafmt.util.ValidationOps
 import sourcecode.Text
@@ -184,7 +185,7 @@ case class ScalafmtStyle(
     spaceBeforeContextBoundColon: Boolean,
     keepSelectChainLineBreaks: Boolean,
     alwaysNewlineBeforeLambdaParameters: Boolean
-) {
+) extends HasStringKeys {
 
   lazy val alignMap: Map[String, Regex] =
     alignTokens.map(x => x.code -> x.owner.r).toMap
@@ -298,5 +299,3 @@ object ScalafmtStyle {
   )
   val unitTest40 = unitTest80.copy(maxColumn = 40)
 }
-
-

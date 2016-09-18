@@ -1,9 +1,9 @@
-package org.scalafmt.config
+package org.scalafmt.hocon
 
 import com.typesafe.config.Config
 import org.scalafmt.Error
 
-class ConfigReader[T](validKeys: Set[String])(f: (HoconOps, T) => T) {
+class HoconConfigReader[T](validKeys: Set[String])(f: (HoconOps, T) => T) {
   def validateConfig(config: Config): Option[Error] = {
     import scala.collection.JavaConverters._
     config.root().keySet().asScala.collectFirst {

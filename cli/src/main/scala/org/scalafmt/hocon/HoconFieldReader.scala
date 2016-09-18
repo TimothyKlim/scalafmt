@@ -1,17 +1,17 @@
-package org.scalafmt.config
+package org.scalafmt.hocon
 
 import com.typesafe.config.Config
 
-trait HoconReader[T] {
+trait HoconFieldReader[T] {
   def read(config: Config, path: String): T
 }
 
-object HoconReader {
-  implicit object IntHoconReader extends HoconReader[Int] {
+object HoconFieldReader {
+  implicit object IntHoconFieldReader extends HoconFieldReader[Int] {
     override def read(config: Config, path: String): Int =
       config.getInt(path)
   }
-  implicit object BoolHoconReader extends HoconReader[Boolean] {
+  implicit object BoolHoconFieldReader extends HoconFieldReader[Boolean] {
     override def read(config: Config, path: String): Boolean =
       config.getBoolean(path)
   }
