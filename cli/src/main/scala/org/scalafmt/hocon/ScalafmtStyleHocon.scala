@@ -23,6 +23,8 @@ object ScalafmtStyleHocon {
 
   implicit val alignTokenReader = new HoconFieldReader[Set[AlignToken]] {
     override def read(config: Config, path: String): Set[AlignToken] = {
+      import scala.collection.JavaConverters._
+      println(config.getAnyRefList(path))
       ???
     }
   }
@@ -63,7 +65,7 @@ object ScalafmtStyleHocon {
                            continuationIndentCallSite = ops.read[Int]             ("continuationIndentCallSite"                  , s.continuationIndentCallSite)                  ,
                            continuationIndentDefnSite = ops.read[Int]             ("continuationIndentDefnSite"                  , s.continuationIndentDefnSite)                  ,
                                      alignMixedOwners = ops.read[Boolean]         ("alignMixedOwners"                            , s.alignMixedOwners)                            ,
-                                          alignTokens = ops.read[Set[AlignToken]] ("alignTokenReader"                            , s.alignTokens)                                 ,
+                                          alignTokens = ops.read[Set[AlignToken]] ("alignTokens"                                 , s.alignTokens)                                 ,
                                binPackImportSelectors = ops.read[Boolean]         ("binPackImportSelectors"                      , s.binPackImportSelectors)                      ,
                             spacesInImportCurlyBraces = ops.read[Boolean]         ("spacesInImportCurlyBraces"                   , s.spacesInImportCurlyBraces)                   ,
                   poorMansTrailingCommasInConfigStyle = ops.read[Boolean]         ("poorMansTrailingCommasInConfigStyle"         , s.poorMansTrailingCommasInConfigStyle)         ,

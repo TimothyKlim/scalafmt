@@ -159,7 +159,7 @@ lazy val cli = project
     mainClass in assembly := Some("org.scalafmt.cli.Cli"),
     libraryDependencies ++= Seq(
       "com.github.scopt" %% "scopt" % "3.3.0",
-      "eu.unicredit" %% "shocon" % "0.1.2"
+      "com.typesafe" % "config" % "1.3.0"
     )
   )
   .dependsOn(core % "compile->compile;test->test")

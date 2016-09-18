@@ -12,6 +12,12 @@ class ConfigTest extends FunSuite {
     val config = ConfigFactory.parseString(
       """
         |maxColumn = 4000
+        |alignTokens: [
+        |  {
+        |    code = "=>"
+        |    owner = "Function"
+        |  }
+        |]
         |reformatDocstrings = false
         |docstrings = java
         |assumeStandardLibraryStripMargin = true
