@@ -4,7 +4,9 @@ import java.io.File
 import java.nio.file.Files
 
 import org.scalafmt.AlignToken
+import org.scalafmt.ContinuationIndent
 import org.scalafmt.Error.MisformattedFile
+import org.scalafmt.IndentOperator
 import org.scalafmt.ScalafmtOptimizer
 import org.scalafmt.ScalafmtRunner
 import org.scalafmt.ScalafmtStyle
@@ -29,31 +31,6 @@ class CliTest extends FunSuite with DiffAssertions {
                    |    "h")
                    |}
                  """.stripMargin
-  val expectedStyle = ScalafmtStyle.default.copy(
-    rewriteTokens = Map(
-      "=>" -> "⇒",
-      "<-" -> "←"
-    ),
-    indentOperatorsIncludeFilter = ScalafmtStyle.indentOperatorsIncludeAkka,
-    indentOperatorsExcludeFilter = ScalafmtStyle.indentOperatorsExcludeAkka,
-    reformatDocstrings = false,
-    maxColumn = 99,
-    alignMixedOwners = true,
-    unindentTopLevelOperators = true,
-    continuationIndentCallSite = 2,
-    continuationIndentDefnSite = 3,
-    scalaDocs = false,
-    binPackImportSelectors = false,
-    poorMansTrailingCommasInConfigStyle = true,
-    alignStripMarginStrings = false,
-    spaceBeforeContextBoundColon = true)
-  val expectedConfig = Cli.Config.default.copy(
-    debug = true,
-    runner = ScalafmtRunner.statement.copy(
-      optimizer = ScalafmtOptimizer.default.copy(bestEffortEscape = true)),
-    style = expectedStyle,
-    files = Seq(new File("foo")),
-    inPlace = true)
   val args = Array(
     "--poorMansTrailingCommasInConfigStyle",
     "true",
@@ -92,7 +69,8 @@ class CliTest extends FunSuite with DiffAssertions {
 
   test("cli parses args") {
     val obtained = Cli.getConfig(args)
-    assert(obtained.contains(expectedConfig))
+    ???
+//    assert(obtained.contains(expectedConfig))
   }
 
   test("cli parses style from config file") {
@@ -104,10 +82,11 @@ class CliTest extends FunSuite with DiffAssertions {
       """.stripMargin
     Files.write(tmpFile, contents.getBytes)
     val externalConfigArgs = Array("--config", tmpFile.toAbsolutePath.toString)
-    val expectedCustomStyle = expectedStyle.copy(
-      alignTokens = Set(AlignToken("#", "Template"), AlignToken("//", ".*")))
-    val obtained = Cli.getConfig(externalConfigArgs)
-    assert(obtained.exists(_.style == expectedCustomStyle))
+    ???
+//    val expectedCustomStyle = expectedStyle.copy(
+//      alignTokens = Set(AlignToken("#", "Template"), AlignToken("//", ".*")))
+//    val obtained = Cli.getConfig(externalConfigArgs)
+//    assert(obtained.exists(_.style == expectedCustomStyle))
   }
 
   test("scalafmt -i --file tmpFile") {
@@ -212,7 +191,8 @@ class CliTest extends FunSuite with DiffAssertions {
                     """.stripMargin
     FileOps.writeFile(file1.getAbsolutePath, original1)
     FileOps.writeFile(file2.getAbsolutePath, original2)
-    val config = Cli.Config.default.copy(inPlace = true, files = Seq(dir), exclude = Seq(file2))
+    val config = Cli.Config.default
+      .copy(inPlace = true, files = Seq(dir), exclude = Seq(file2))
     Cli.run(config)
     val obtained1 = FileOps.readFile(file1)
     val obtained2 = FileOps.readFile(file2)

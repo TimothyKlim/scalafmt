@@ -10,8 +10,10 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.scalafmt.AlignToken
+import org.scalafmt.ContinuationIndent
 import org.scalafmt.Error.MisformattedFile
 import org.scalafmt.FormatResult
+import org.scalafmt.IndentOperator
 import org.scalafmt.Scalafmt
 import org.scalafmt.ScalafmtOptimizer
 import org.scalafmt.ScalafmtRunner
@@ -183,163 +185,16 @@ object Cli {
           val offset = if (from == to) 0 else -1
           c.copy(range = c.range + Range(from - 1, to + offset))
       } text "(experimental) only format line range from=to"
-
-      // Style configs
-      note(s"\nStyle configuration options:")
-      opt[ScalafmtStyle]('s', "style") action { (style, c) =>
-        c.copy(style = style)
-      } text s"base style, must be one of: ${ScalafmtStyle.activeStyles.keys}"
-      opt[Int]("maxColumn") action { (col, c) =>
-        c.copy(style = c.style.copy(maxColumn = col))
-      } text s"See ScalafmtStyle scaladoc."
-      opt[Int]("continuationIndentCallSite") action { (n, c) =>
-        c.copy(style = c.style.copy(continuationIndentCallSite = n))
-      } text s"See ScalafmtStyle scaladoc."
-      opt[Int]("continuationIndentDefnSite") action { (n, c) =>
-        c.copy(style = c.style.copy(continuationIndentDefnSite = n))
-      } text s"See ScalafmtStyle scaladoc."
       opt[Boolean]("formatSbtFiles") action { (b, c) =>
         c.copy(sbtFiles = b)
       } text s"If true, formats .sbt files as well."
-      opt[Boolean]("reformatComments") action { (b, c) =>
-        c.copy(style = c.style.copy(reformatDocstrings = b))
-      } text s"See ScalafmtStyle scaladoc."
-      opt[Unit]("scalaDocs") action { (_, c) =>
-        c.copy(style = c.style.copy(scalaDocs = true))
-      } text s"See ScalafmtStyle scaladoc."
-      opt[Unit]("javaDocs") action { (_, c) =>
-        c.copy(style = c.style.copy(scalaDocs = false))
-      } text s"Sets scalaDocs to false. See ScalafmtStyle scaladoc."
-      opt[Boolean]("assumeStandardLibraryStripMargin") action { (bool, c) =>
-        c.copy(style = c.style.copy(alignStripMarginStrings = bool))
-      } text s"See ScalafmtStyle scaladoc."
-      opt[Boolean]("alignByOpenParenCallSite") action { (bool, c) =>
-        c.copy(style = c.style.copy(alignByOpenParenCallSite = bool))
-      } text s"See ScalafmtStyle scaladoc."
-      opt[Boolean]("alignByOpenParenDefnSite") action { (bool, c) =>
-        c.copy(style = c.style.copy(alignByOpenParenDefnSite = bool))
-      } text s"See ScalafmtStyle scaladoc."
-      opt[Boolean]("alignByArrowEnumeratorGenerator") action { (bool, c) =>
-        c.copy(style = c.style.copy(alignByArrowEnumeratorGenerator = bool))
-      } text s"See ScalafmtStyle scaladoc."
-      opt[Boolean]("binPackParentConstructors") action { (bool, c) =>
-        c.copy(style = c.style.copy(binPackParentConstructors = bool))
-      } text s"See ScalafmtStyle scaladoc."
-      opt[Boolean]("spacesInImportCurlyBraces") action { (bool, c) =>
-        c.copy(style = c.style.copy(spacesInImportCurlyBraces = bool))
-      } text s"See ScalafmtStyle scaladoc."
-      opt[Boolean]("danglingParentheses") action { (bool, c) =>
-        c.copy(
-          style = c.style.copy(configStyleArguments = !bool,
-                               danglingParentheses = bool))
-      } text s"See ScalafmtConfig scaladoc. --alignByOpenParenCallSite false is recommended."
-      opt[Boolean]("spaceAfterTripleEquals") action { (bool, c) =>
-        c.copy(style = c.style.copy(spaceAfterTripleEquals = bool))
-      } text s"See ScalafmtConfig scaladoc."
-      opt[Boolean]("allowNewlineBeforeColonInMassiveReturnTypes") action {
-        (bool, c) =>
-          c.copy(
-            style =
-              c.style.copy(allowNewlineBeforeColonInMassiveReturnTypes = bool))
-      } text s"See ScalafmtStyle scaladoc."
-      opt[Boolean]("unindentTopLevelOperators") action { (bool, c) =>
-        c.copy(style = c.style.copy(unindentTopLevelOperators = bool))
-      } text s"See ScalafmtConfig scaladoc."
-      opt[Boolean]("poorMansTrailingCommasInConfigStyle")
-        .hidden()
-        .action { (bool, c) =>
-          c.copy(
-            style = c.style.copy(poorMansTrailingCommasInConfigStyle = bool))
-        }
-        .text(s"See ScalafmtConfig scaladoc.")
-      opt[Boolean]("binPackImportSelectors") action { (bool, c) =>
-        c.copy(style = c.style.copy(binPackImportSelectors = bool))
-      } text s"See ScalafmtConfig scaladoc."
-      opt[String]("indentOperatorsIncludeFilter") action { (str, c) =>
-        c.copy(style = c.style.copy(indentOperatorsIncludeFilter = str.r))
-      } text s"See ScalafmtConfig scaladoc."
-      opt[String]("indentOperatorsExcludeFilter") action { (str, c) =>
-        c.copy(style = c.style.copy(indentOperatorsExcludeFilter = str.r))
-      } text s"See ScalafmtConfig scaladoc."
-      opt[Boolean]("indentOperators") action { (bool, c) =>
-        val (include, exclude) = {
-          if (bool)
-            (ScalafmtStyle.indentOperatorsIncludeDefault,
-             ScalafmtStyle.indentOperatorsExcludeDefault)
-          else
-            (ScalafmtStyle.indentOperatorsIncludeAkka,
-             ScalafmtStyle.indentOperatorsExcludeAkka)
-        }
-        c.copy(
-          style = c.style.copy(indentOperatorsIncludeFilter = include,
-                               indentOperatorsExcludeFilter = exclude))
-      } text s"See ScalafmtConfig scaladoc."
-      opt[Seq[String]]("rewriteTokens") action { (str, c) =>
-        val rewriteTokens = Map(gimmeStrPairs(str): _*)
-        c.copy(style = c.style.copy(rewriteTokens = rewriteTokens))
-      } text s"""(experimental) Same syntax as alignTokens. For example,
-              |
-              |        --rewriteTokens ⇒;=>,←;<-
-              |
-              |        will rewrite unicode arrows to their ascii equivalents.""".stripMargin
-      opt[Boolean]("alignMixedOwners") action { (bool, c) =>
-        c.copy(style = c.style.copy(alignMixedOwners = bool))
-      } text s"See ScalafmtConfig scaladoc."
-      opt[Boolean]("keepSelectChainLineBreaks") action { (bool, c) =>
-        c.copy(style = c.style.copy(keepSelectChainLineBreaks = bool))
-      } text s"See ScalafmtConfig scaladoc."
-      opt[Boolean]("alwaysNewlineBeforeLambdaParameters") action { (bool, c) =>
-        c.copy(style = c.style.copy(alwaysNewlineBeforeLambdaParameters = bool))
-      } text s"See ScalafmtConfig scaladoc."
-      opt[Seq[String]]("alignTokens") action { (tokens, c) =>
-        val alignsTokens =
-          gimmeStrPairs(tokens).map((AlignToken.apply _).tupled)
-        c.copy(style = c.style.copy(alignTokens = alignsTokens.toSet))
-      } text s"""(experimental). Comma separated sequence of tokens to align by. Each
-              |        token is a ; separated pair of strings where the first string
-              |        is the string literal value of the token to align by and the
-              |        second string is a regular expression matching the class
-              |        name of the scala.meta.Tree that "owns" that token.
-              |
-              |        Examples:
-              |
-              |        1. => in pattern matching
-              |        =>;Case
-              |
-              |        2. Align by -> tuples.
-              |        ->;Term.ApplyInfix
-              |
-              |        NOTE. the closest owner of -> is actually Term.Name,
-              |        but in case Term.Name we match against the parent of Term.Name.
-              |
-              |        3. Assignment of def var/val/def
-              |        =;Defn.(Va(l|r)|Def)
-              |
-              |        4. Comment owned by whatever tree
-              |        //;.*
-              |
-              |        To use all default alignment rules, use --style defaultWithAlign.
-              |        To pick your favirite alignment rules, set --alignTokens <value> to:
-              |        =>;Case,=;Defn.(Va(l|r)|Def),->;Term.ApplyInfix,//;.*
-              |
-              |        It's best to play around with scala.meta in a console to
-              |        understand which regexp you should use for the owner.
-              |""".stripMargin
-
-      opt[Boolean]("spaceBeforeContextBoundColon") action { (bool, c) =>
-        c.copy(style = c.style.copy(spaceBeforeContextBoundColon = bool))
-      } text s"See ScalafmtConfig scaladoc."
-
-      opt[LineEndings]("lineEndings") action { (lineEndings, c) =>
-        c.copy(style = c.style.copy(lineEndings = lineEndings))
-      } text s"See ScalafmtConfig scaladoc."
 
       note(s"""
-            |Examples:
-            |
-            |$usageExamples
-            |
-            |Please file bugs to https://github.com/olafurpg/scalafmt/issues
+              |Examples:
+              |
+              |$usageExamples
+              |
+              |Please file bugs to https://github.com/olafurpg/scalafmt/issues
       """.stripMargin)
     }
   lazy val parser = scoptParser
@@ -423,8 +278,8 @@ object Cli {
       if (errors.nonEmpty) {
         val list = errors.map(x => s"${x.filename}: ${x.error}")
         logger.error(s"""Found ${errors.length} errors:
-             |${list.mkString("\n")}
-             |""".stripMargin)
+                        |${list.mkString("\n")}
+                        |""".stripMargin)
 
       }
 
