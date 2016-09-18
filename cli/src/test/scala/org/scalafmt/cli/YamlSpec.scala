@@ -9,7 +9,6 @@ import org.scalatest.FunSuite
 
 class YamlSpec extends FunSuite {
   val input = """
-
 # Runner settings.
 formatSbtFiles: true
 
@@ -40,14 +39,16 @@ binPackParentConstructors: true
 spaceAfterTripleEquals: true
 unindentTopLevelOperators: false
 indentOperator:
-  includeFilter: include
-  excludeFilter: exclude
+  include: .*
+  exclude: "&&"
 rewriteTokens:
-  from: to
-  to: from
+  =>: ⇒
+  <-: ←
 alignTokens:
-  - owner: owner
-    code: code
+- extends
+- code: //
+- code: =>
+  owner: Function
 alignByArrowEnumeratorGenerator: true
 alignByIfWhileOpenParen: false
 spaceBeforeContextBoundColon: true
@@ -77,9 +78,16 @@ spaceBeforeContextBoundColon: true
       binPackParentConstructors = true,
       spaceAfterTripleEquals = true,
       unindentTopLevelOperators = false,
-      indentOperator = IndentOperator("include", "exclude"),
-      alignTokens = Set(AlignToken("code", "owner")),
-      rewriteTokens = Map("from" -> "to", "to" -> "from"),
+      indentOperator = IndentOperator(".*", "&&"),
+      alignTokens = Set(
+        AlignToken("extends", ".*"),
+        AlignToken("//", ".*"),
+        AlignToken("=>", "Function")
+      ),
+      rewriteTokens = Map(
+        "=>" -> "⇒",
+        "<-" -> "←"
+      ),
       alignByArrowEnumeratorGenerator = true,
       alignByIfWhileOpenParen = false,
       spaceBeforeContextBoundColon = true
@@ -100,5 +108,13 @@ spaceBeforeContextBoundColon: true
       )
     )
     assert(obtainedRunner === expectedRunner)
+  }
+  test("inline syntax") {
+    val config =
+      """
+        |scalafmt: { maxColumn: 40 }
+      """.stripMargin
+    val nested = ConfigurationOptionsParser.parse(config).valueOr(x => throw x)
+    assert(nested.maxColumn.contains(40))
   }
 }

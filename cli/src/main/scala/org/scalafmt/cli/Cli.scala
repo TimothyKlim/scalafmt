@@ -249,12 +249,12 @@ object Cli {
       opt[String]("indentOperatorsIncludeFilter") action { (str, c) =>
         c.copy(
           style = c.style.copy(
-            indentOperator = c.style.indentOperator.copy(includeFilter = str)))
+            indentOperator = c.style.indentOperator.copy(include = str)))
       } text s"See ScalafmtConfig scaladoc."
       opt[String]("indentOperatorsExcludeFilter") action { (str, c) =>
         c.copy(
           style = c.style.copy(
-            indentOperator = c.style.indentOperator.copy(excludeFilter = str)))
+            indentOperator = c.style.indentOperator.copy(exclude = str)))
       } text s"See ScalafmtConfig scaladoc."
       opt[Boolean]("indentOperators") action { (bool, c) =>
         val x =

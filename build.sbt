@@ -158,6 +158,7 @@ lazy val cli = project
     moduleName := "scalafmt-cli",
     mainClass in assembly := Some("org.scalafmt.cli.Cli"),
     libraryDependencies ++= Seq(
+      "org.yaml"         % "snakeyaml"      % "1.17",
       "io.circe"         %% "circe-core"    % Deps.circe,
       "io.circe"         %% "circe-generic" % Deps.circe,
       "io.circe"         %% "circe-parser"  % Deps.circe,

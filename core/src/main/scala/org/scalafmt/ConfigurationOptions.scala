@@ -2,6 +2,7 @@ package org.scalafmt
 
 import org.scalafmt.Error.UnknownStyle
 
+// TODO(olafur) experiment with shapeless to avoid this cruft :/
 case class ConfigurationOptions(
     // Cli options
     formatSbtFiles: Option[Boolean],
@@ -45,33 +46,33 @@ case class ConfigurationOptions(
     }.getOrElse(initStyle)
     // format: off
     style.copy(
-      maxColumn = maxColumn.getOrElse(style.maxColumn),
-      reformatDocstrings = reformatDocstrings.getOrElse(style.reformatDocstrings),
-      scalaDocs = scalaDocs.getOrElse(style.scalaDocs),
-      alignStripMarginStrings = alignStripMarginStrings.getOrElse(style.alignStripMarginStrings),
-      binPackArguments = binPackArguments.getOrElse(style.binPackArguments),
-      binPackParameters = binPackParameters.getOrElse(style.binPackParameters),
-      configStyleArguments = configStyleArguments.getOrElse(style.configStyleArguments),
-      binPackDotChains = binPackDotChains.getOrElse(style.binPackDotChains),
-      noNewlinesBeforeJsNative = noNewlinesBeforeJsNative.getOrElse(style.noNewlinesBeforeJsNative),
-      danglingParentheses = danglingParentheses.getOrElse(style.danglingParentheses),
-      alignByOpenParenCallSite = alignByOpenParenCallSite.getOrElse(style.alignByOpenParenCallSite),
-      alignByOpenParenDefnSite = alignByOpenParenDefnSite.getOrElse(style.alignByOpenParenDefnSite),
-      continuationIndentCallSite = continuationIndentCallSite.getOrElse(style.continuationIndentCallSite),
-      continuationIndentDefnSite = continuationIndentDefnSite.getOrElse(style.continuationIndentDefnSite),
-      alignMixedOwners = alignMixedOwners.getOrElse(style.alignMixedOwners),
-      alignTokens = alignTokens.getOrElse(style.alignTokens),
-      binPackImportSelectors = binPackImportSelectors.getOrElse(style.binPackImportSelectors),
-      spacesInImportCurlyBraces = spacesInImportCurlyBraces.getOrElse(style.spacesInImportCurlyBraces),
+      maxColumn                                   = maxColumn.getOrElse                                  (style.maxColumn),
+      reformatDocstrings                          = reformatDocstrings.getOrElse                         (style.reformatDocstrings),
+      scalaDocs                                   = scalaDocs.getOrElse                                  (style.scalaDocs),
+      alignStripMarginStrings                     = alignStripMarginStrings.getOrElse                    (style.alignStripMarginStrings),
+      binPackArguments                            = binPackArguments.getOrElse                           (style.binPackArguments),
+      binPackParameters                           = binPackParameters.getOrElse                          (style.binPackParameters),
+      configStyleArguments                        = configStyleArguments.getOrElse                       (style.configStyleArguments),
+      binPackDotChains                            = binPackDotChains.getOrElse                           (style.binPackDotChains),
+      noNewlinesBeforeJsNative                    = noNewlinesBeforeJsNative.getOrElse                   (style.noNewlinesBeforeJsNative),
+      danglingParentheses                         = danglingParentheses.getOrElse                        (style.danglingParentheses),
+      alignByOpenParenCallSite                    = alignByOpenParenCallSite.getOrElse                   (style.alignByOpenParenCallSite),
+      alignByOpenParenDefnSite                    = alignByOpenParenDefnSite.getOrElse                   (style.alignByOpenParenDefnSite),
+      continuationIndentCallSite                  = continuationIndentCallSite.getOrElse                 (style.continuationIndentCallSite),
+      continuationIndentDefnSite                  = continuationIndentDefnSite.getOrElse                 (style.continuationIndentDefnSite),
+      alignMixedOwners                            = alignMixedOwners.getOrElse                           (style.alignMixedOwners),
+      alignTokens                                 = alignTokens.getOrElse                                (style.alignTokens),
+      binPackImportSelectors                      = binPackImportSelectors.getOrElse                     (style.binPackImportSelectors),
+      spacesInImportCurlyBraces                   = spacesInImportCurlyBraces.getOrElse                  (style.spacesInImportCurlyBraces),
       allowNewlineBeforeColonInMassiveReturnTypes = allowNewlineBeforeColonInMassiveReturnTypes.getOrElse(style.allowNewlineBeforeColonInMassiveReturnTypes),
-      binPackParentConstructors = binPackParentConstructors.getOrElse(style.binPackParentConstructors),
-      spaceAfterTripleEquals = spaceAfterTripleEquals.getOrElse(style.spaceAfterTripleEquals),
-      unindentTopLevelOperators = unindentTopLevelOperators.getOrElse(style.unindentTopLevelOperators),
-      indentOperator = indentOperator.getOrElse(style.indentOperator),
-      rewriteTokens = rewriteTokens.getOrElse(style.rewriteTokens),
-      alignByArrowEnumeratorGenerator = alignByArrowEnumeratorGenerator.getOrElse(style.alignByArrowEnumeratorGenerator),
-      alignByIfWhileOpenParen = alignByIfWhileOpenParen.getOrElse(style.alignByIfWhileOpenParen),
-      spaceBeforeContextBoundColon = spaceBeforeContextBoundColon.getOrElse(style.spaceBeforeContextBoundColon)
+      binPackParentConstructors                   = binPackParentConstructors.getOrElse                  (style.binPackParentConstructors),
+      spaceAfterTripleEquals                      = spaceAfterTripleEquals.getOrElse                     (style.spaceAfterTripleEquals),
+      unindentTopLevelOperators                   = unindentTopLevelOperators.getOrElse                  (style.unindentTopLevelOperators),
+      indentOperator                              = indentOperator.getOrElse                             (style.indentOperator),
+      rewriteTokens                               = rewriteTokens.getOrElse                              (style.rewriteTokens),
+      alignByArrowEnumeratorGenerator             = alignByArrowEnumeratorGenerator.getOrElse            (style.alignByArrowEnumeratorGenerator),
+      alignByIfWhileOpenParen                     = alignByIfWhileOpenParen.getOrElse                    (style.alignByIfWhileOpenParen),
+      spaceBeforeContextBoundColon                = spaceBeforeContextBoundColon.getOrElse               (style.spaceBeforeContextBoundColon)
     )
     // format: on
   }

@@ -193,9 +193,10 @@ case class ScalafmtStyle(
     continuationIndentDefnSite
   )
 }
-case class IndentOperator(includeFilter: String, excludeFilter: String) {
-  val includeRegexp = includeFilter.r
-  val excludeRegexp = excludeFilter.r
+
+case class IndentOperator(include: String, exclude: String) {
+  val includeRegexp = include.r
+  val excludeRegexp = exclude.r
 }
 
 object IndentOperator {
@@ -236,8 +237,8 @@ object ScalafmtStyle {
     spaceAfterTripleEquals = false,
     unindentTopLevelOperators = false,
     indentOperator = IndentOperator(
-      includeFilter = indentOperatorsIncludeDefault,
-      excludeFilter = indentOperatorsExcludeDefault
+      include = indentOperatorsIncludeDefault,
+      exclude = indentOperatorsExcludeDefault
     ),
     alignByArrowEnumeratorGenerator = false,
     rewriteTokens = Map.empty[String, String],
