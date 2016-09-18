@@ -36,8 +36,14 @@ object ScalafmtStyleHocon {
     }
   }
 
+  val validKeys =
+    ScalafmtStyle.default.validKeys ++
+      Set(
+        "assumeStandardLibraryStripMargin",
+        "docstrings"
+      )
   val reader =
-    new HoconConfigReader[ScalafmtStyle](ScalafmtStyle.default.validKeys)({
+    new HoconConfigReader[ScalafmtStyle](validKeys)({
       case (ops, init) =>
         val s = readStyle(init, ops.config)
         // format: off
@@ -45,7 +51,7 @@ object ScalafmtStyleHocon {
                                             maxColumn = ops.read[Int]             ("maxColumn"                                   , s.maxColumn)                                   ,
                                    reformatDocstrings = ops.read[Boolean]         ("reformatDocstrings"                          , s.reformatDocstrings)                          ,
                                             scalaDocs = ops.read[Boolean]         ("docstrings"                                  , s.scalaDocs)(docStringReader)                  ,
-                              alignStripMarginStrings = ops.read[Boolean]         ("alignStripMarginStrings"                     , s.alignStripMarginStrings)                     ,
+                              alignStripMarginStrings = ops.read[Boolean]         ("assumeStandardLibraryStripMargin"            , s.alignStripMarginStrings)                     ,
                                      binPackArguments = ops.read[Boolean]         ("binPackArguments"                            , s.binPackArguments)                            ,
                                     binPackParameters = ops.read[Boolean]         ("binPackParameters"                           , s.binPackParameters)                           ,
                                  configStyleArguments = ops.read[Boolean]         ("configStyleArguments"                        , s.configStyleArguments)                        ,
