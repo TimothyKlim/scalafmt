@@ -102,15 +102,18 @@ lazy val core = project
   .settings(
     moduleName := "scalafmt-core",
     PB.protobufSettings,
+    
     scalaSource in PB.protobufConfig := sourceManaged.value,
+    PB.javaConversions in PB.protobufConfig := true,
     test in assembly := {
       (test in Test).value
       // TODO(olafur) This should be an integration test.
       (runMain in Test).toTask(" org.scalafmt.FormatExperimentApp").value
     },
     libraryDependencies ++= Seq(
-      "com.lihaoyi"   %% "sourcecode" % "0.1.1",
-      "org.scalameta" %% "scalameta"  % Deps.scalameta,
+      "com.lihaoyi"            %% "sourcecode"      % "0.1.1",
+      "org.scalameta"          %% "scalameta"       % Deps.scalameta,
+      "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.4.20" % PB.protobufConfig,
       // Test dependencies
       "org.scalariform"                %% "scalariform"    % Deps.scalariform,
       "org.scala-lang"                 % "scala-reflect"   % scalaVersion.value % "test",

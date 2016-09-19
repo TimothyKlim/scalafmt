@@ -1,5 +1,5 @@
 
-package tutorial;
+option java_package = "tutorial";
 
 message Person {
   optional string name = 1;
