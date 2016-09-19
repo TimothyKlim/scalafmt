@@ -41,6 +41,25 @@ class SortImportSelectorsTest extends RewriteSuite(SortImportSelectors) {
     """.stripMargin
   )
 
+  check(
+    """| // sorting
+       |import a.{
+       |  ~>,
+       |  lowercase,
+       |  Uppercase,
+       |  `symbol`
+       |}
+    """.stripMargin,
+    """| // sorting
+       |import a.{
+       |  `symbol`,
+       |  ~>,
+       |  lowercase,
+       |  Uppercase
+       |}
+    """.stripMargin
+  )
+
   // Caveats
   check(
     """| // rename/wildcard/unimport
