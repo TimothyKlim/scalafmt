@@ -282,7 +282,7 @@ object Cli {
           style = c.style.copy(indentOperatorsIncludeFilter = include,
                                indentOperatorsExcludeFilter = exclude))
       } text s"See ScalafmtConfig scaladoc."
-      opt[Seq[Rewrite]]("rewriteRules") action { (rewrites, c) =>
+      opt[Seq[Rewrite]]("rewriteRules").hidden().action { (rewrites, c) =>
         c.copy(runner = c.runner.copy(rewrites = rewrites))
       } text s"""(experimental) Run rewrite rules before formatting, available options: ${Rewrite.available}."""
       opt[Seq[String]]("rewriteTokens") action { (str, c) =>
