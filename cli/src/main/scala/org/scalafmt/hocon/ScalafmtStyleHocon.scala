@@ -39,7 +39,6 @@ object ScalafmtStyleHocon {
   }
 
   val validKeys =
-    ScalafmtStyle.default.validKeys ++
       Set(
         "assumeStandardLibraryStripMargin",
         "docstrings"

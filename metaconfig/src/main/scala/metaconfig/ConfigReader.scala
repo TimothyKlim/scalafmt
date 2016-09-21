@@ -62,35 +62,43 @@ class ConfigReader extends scala.annotation.StaticAnnotation {
         }
      """
     }
-    Defn.Def
-    defn match {
-      case q"..$mods class $tname[..$tparams] ..$mods2 (...$paramss) extends $template" =>
-        val template"{ ..$earlyStats } with ..$ctorcalls { $param => ..$stats }" =
-          template
-        val flatParams = paramss.flatten
-        val fields: Seq[Term.Tuple] = flatParams.collect {
-          case x if x.name.isInstanceOf[Term.Name] =>
-            val nameLit = Lit(x.name.syntax)
-            q"($nameLit, ${x.name.asInstanceOf[Term.Name]})"
-        }
-        val fieldsDef: Stat = {
-          val body =
-            Term.Apply(q"_root_.scala.collection.immutable.Map", fields)
-          q"def fields = $body"
-        }
-        val typReader = genReader(tname, flatParams)
-        val newStats = Seq(fieldsDef) ++ Seq(typReader) ++ stats
-        val newTemplate = template"""
+
+    def expandClass(c: Defn.Class): Stat = {
+      val q"..$mods class $tname[..$tparams] ..$mods2 (...$paramss) extends $template" = c
+      val template"{ ..$earlyStats } with ..$ctorcalls { $param => ..$stats }" =
+        template
+      val flatParams = paramss.flatten
+      val fields: Seq[Term.Tuple] = flatParams.collect {
+        case x if x.name.isInstanceOf[Term.Name] =>
+          val nameLit = Lit(x.name.syntax)
+          q"($nameLit, ${x.name.asInstanceOf[Term.Name]})"
+      }
+      val fieldsDef: Stat = {
+        val body =
+          Term.Apply(q"_root_.scala.collection.immutable.Map", fields)
+        q"def fields = $body"
+      }
+      val typReader = genReader(tname, flatParams)
+      val newStats = stats ++ Seq(fieldsDef) ++ Seq(typReader)
+      val newTemplate = template"""
         { ..$earlyStats } with ..$ctorcalls { $param => ..$newStats }
 
                                   """
-        val result =
-          q"""
+      val result =
+        q"""
             ..$mods class $tname[..$tparams] ..$mods2 (...$paramss) extends $newTemplate
          """
-        println(result)
-        result
-      case els => abort("Failed to expand...")
+//      println(result)
+      result
+    }
+    defn match {
+      case c: Defn.Class => expandClass(c)
+      case Term.Block(Seq(c: Defn.Class, companion)) =>
+        q"""
+        ${expandClass(c)}; $companion
+         """
+      case els =>
+        abort(s"Failed to expand: ${els.structure}")
     }
   }
 }

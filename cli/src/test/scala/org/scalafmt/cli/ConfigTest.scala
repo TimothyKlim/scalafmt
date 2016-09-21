@@ -4,6 +4,7 @@ import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigValue
 import org.scalafmt.ScalafmtStyle
+import org.scalafmt.hocon.Hocon2Class
 import org.scalafmt.hocon.ScalafmtStyleHocon
 import org.scalafmt.util.LoggerOps._
 import org.scalatest.FunSuite
@@ -84,40 +85,13 @@ class ConfigTest extends FunSuite {
   test("map[string, any]") {
     val config =
       """
-        |[
-        |  a: {
-        |   b = 2
-        |   hoobar: {
-        |     k = 1
-        |   }
-        |   d = 3
-        |  }
-        |  c = true
-        |  k = [
-        |    { i: 2 },
-        |    { i: 2, y: 3}
-        |  ]
-        |]
-        |
+        |maxColumn = 555
       """.stripMargin
     val s = ConfigFactory.parseString(config)
-    println(s)
-    val it = s.entrySet().iterator()
-    import scala.collection.JavaConverters._
-    def config2map(config: Config): Map[String, Any] = {
-      def loop(obj: Any): Any = obj match {
-        case map: java.util.Map[_, _] =>
-          map.asScala.map {
-            case (key, value) => key -> loop(value)
-          }.toMap
-        case map: java.util.List[_] =>
-          map.asScala.map(loop).toList
-        case e => e
-      }
-      loop(config.root().unwrapped()).asInstanceOf[Map[String, Any]]
-    }
-    logger.elem(s.getValue("a"))
-    logger.elem(config2map(s))
+    val result =Hocon2Class.gimmeClass(s, ScalafmtStyle.default.reader)
+    logger.elem(result)
+
   }
+
 
 }

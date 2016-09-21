@@ -5,6 +5,7 @@ import java.nio.file.Files
 
 import org.scalafmt.AlignToken
 import org.scalafmt.Error.MisformattedFile
+import org.scalafmt.IndentOperator
 import org.scalafmt.ScalafmtOptimizer
 import org.scalafmt.ScalafmtRunner
 import org.scalafmt.ScalafmtStyle
@@ -33,8 +34,7 @@ class CliTest extends FunSuite with DiffAssertions {
       "=>" -> "⇒",
       "<-" -> "←"
     ),
-    indentOperatorsIncludeFilter = ScalafmtStyle.indentOperatorsIncludeAkka,
-    indentOperatorsExcludeFilter = ScalafmtStyle.indentOperatorsExcludeAkka,
+    indentOperator = IndentOperator.akka,
     reformatDocstrings = false,
     maxColumn = 99,
     alignMixedOwners = true,

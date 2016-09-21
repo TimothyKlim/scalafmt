@@ -2,6 +2,7 @@ package metaconfig
 
 import scala.collection.immutable.Iterable
 import scala.collection.immutable.Seq
+import scala.collection.immutable.Set
 
 trait Reader[+T] {
   def read(any: Any): Result[T]
@@ -35,6 +36,16 @@ object Reader {
         if (lefts.nonEmpty) Left(ConfigErrors(lefts))
         else Right(res.collect { case Right(e) => e })
     }
+
+  implicit def setR[T](implicit ev: Reader[T]): Reader[Set[T]] =
+    instance[Set[T]] {
+      case lst: Set[_] =>
+        val res = lst.map(ev.read)
+        val lefts = res.collect { case Left(e) => e }
+        if (lefts.nonEmpty) Left(ConfigErrors(lefts.to[Seq]))
+        else Right(res.collect { case Right(e) => e })
+    }
+
   // TODO(olafur) generic can build from reader
   implicit def mapR[K, V](implicit evK: Reader[K],
                           evV: Reader[V]): Reader[Map[K, V]] =

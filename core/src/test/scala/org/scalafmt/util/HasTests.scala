@@ -22,6 +22,8 @@ import scala.meta.Tree
 import scala.meta.parsers.Parse
 import scala.meta.parsers.ParseException
 
+import org.scalafmt.IndentOperator
+
 trait HasTests extends FunSuiteLike with FormatAssertions {
   import LoggerOps._
   val scalafmtRunner = ScalafmtRunner.default.copy(
@@ -129,12 +131,8 @@ trait HasTests extends FunSuiteLike with FormatAssertions {
           alignByArrowEnumeratorGenerator = true
         )
       case "noIndentOperators" =>
-        ScalafmtStyle.unitTest80.copy(
-          unindentTopLevelOperators = true,
-          indentOperatorsIncludeFilter =
-            ScalafmtStyle.indentOperatorsIncludeAkka,
-          indentOperatorsExcludeFilter =
-            ScalafmtStyle.indentOperatorsExcludeAkka)
+        ScalafmtStyle.unitTest80.copy(unindentTopLevelOperators = true,
+                                      indentOperator = IndentOperator.akka)
       case "unicode" =>
         ScalafmtStyle.unitTest80.copy(
           rewriteTokens = Map(
