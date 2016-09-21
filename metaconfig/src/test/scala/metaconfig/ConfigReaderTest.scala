@@ -81,4 +81,14 @@ class ConfigReaderTest extends FunSuite {
         HasMap(Map(666 -> 777))))
   }
 
+  test("inner") {
+//    val m: Map[String, Any] = Map(
+//      "i" -> 4
+//      )
+//    )
+//    val o = Outer(2, Inner(3)).reader.read(m)
+
+
+  }
+
 }

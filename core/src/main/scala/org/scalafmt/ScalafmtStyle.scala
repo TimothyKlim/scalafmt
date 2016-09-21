@@ -3,6 +3,7 @@ package org.scalafmt
 import scala.util.matching.Regex
 
 import metaconfig.ConfigReader
+import metaconfig.Reader
 import org.scalafmt.util.LoggerOps
 import org.scalafmt.util.ValidationOps
 import sourcecode.Text
@@ -157,7 +158,12 @@ case class ScalafmtStyle(
     // Note: default style is right below
     maxColumn: Int,
     reformatDocstrings: Boolean,
+
+
     scalaDocs: Boolean,
+
+
+
     alignStripMarginStrings: Boolean,
     binPackArguments: Boolean,
     binPackParameters: Boolean,
@@ -187,8 +193,8 @@ case class ScalafmtStyle(
     alwaysNewlineBeforeLambdaParameters: Boolean
 ) {
 
-  implicit val indentReader = indentOperator.reader
-  implicit val alignReader = AlignToken.default.head.reader
+  implicit val indentReader: Reader[IndentOperator] = indentOperator.reader
+  implicit val alignReader: Reader[AlignToken] = AlignToken.default.head.reader
 
   lazy val alignMap: Map[String, Regex] =
     alignTokens.map(x => x.code -> x.owner.r).toMap

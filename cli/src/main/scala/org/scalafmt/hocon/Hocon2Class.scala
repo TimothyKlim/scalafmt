@@ -20,6 +20,7 @@ object Hocon2Class {
   def gimmeClass[T](config: Config,
                     reader: metaconfig.Reader[T]): metaconfig.Result[T] = {
     val map = config2map(config)
+    println(map)
     reader.read(map)
   }
 

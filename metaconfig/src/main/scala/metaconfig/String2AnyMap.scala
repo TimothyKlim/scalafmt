@@ -9,5 +9,6 @@ object String2AnyMap {
         case _: ClassCastException =>
           None
       }
+    case _ => None
   }
 }
