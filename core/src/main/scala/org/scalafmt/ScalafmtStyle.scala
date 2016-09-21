@@ -185,7 +185,8 @@ case class ScalafmtStyle(
     alignByIfWhileOpenParen: Boolean,
     spaceBeforeContextBoundColon: Boolean,
     keepSelectChainLineBreaks: Boolean,
-    alwaysNewlineBeforeLambdaParameters: Boolean
+    alwaysNewlineBeforeLambdaParameters: Boolean,
+    style: BaseStyle = BaseStyle.default
 ) {
   protected[scalafmt] val fallbackAlign = new AlignToken("<empty>", ".*")
   implicit val indentReader: Reader[IndentOperator] = indentOperator.reader
@@ -199,4 +200,4 @@ case class ScalafmtStyle(
   )
 }
 
-object ScalafmtStyle extends ScalafmtConfig
+object ScalafmtStyle extends Settings

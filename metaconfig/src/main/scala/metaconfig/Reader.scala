@@ -3,13 +3,14 @@ package metaconfig
 import scala.collection.immutable.Iterable
 import scala.collection.immutable.Seq
 import scala.collection.immutable.Set
+import scala.reflect.ClassTag
 
 trait Reader[+T] {
   def read(any: Any): Result[T]
 }
 
 object Reader {
-  def instance[T](f: PartialFunction[Any, Result[T]]) =
+  def instance[T](f: PartialFunction[Any, Result[T]])(implicit ev: ClassTag[T]) =
     new Reader[T] {
       override def read(any: Any): Result[T] =
         try {
@@ -39,6 +40,7 @@ object Reader {
 
   implicit def setR[T](implicit ev: Reader[T]): Reader[Set[T]] =
     instance[Set[T]] {
+      case lst: Set[_] => Right(lst.asInstanceOf[Set[T]])
       case lst: Seq[_] =>
         val res = lst.map(ev.read)
         val lefts = res.collect { case Left(e) => e }

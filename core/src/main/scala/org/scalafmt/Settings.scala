@@ -5,9 +5,12 @@ import scala.collection.immutable.Set
 import scala.collection.immutable.Seq
 
 import metaconfig.ConfigReader
+import metaconfig.Reader
+import metaconfig.String2AnyMap
 import org.scalafmt.util.LoggerOps
 
-trait ScalafmtConfig {
+trait Settings {
+
   val indentOperatorsIncludeAkka = "^.*=$"
   val indentOperatorsExcludeAkka = "^$"
   val indentOperatorsIncludeDefault = ".*"
@@ -46,7 +49,8 @@ trait ScalafmtConfig {
     alignByIfWhileOpenParen = true,
     spaceBeforeContextBoundColon = false,
     keepSelectChainLineBreaks = false,
-    alwaysNewlineBeforeLambdaParameters = false
+    alwaysNewlineBeforeLambdaParameters = false,
+    style = BaseStyle.default
   )
 
   val intellij = default.copy(
@@ -111,5 +115,22 @@ trait ScalafmtConfig {
     continuationIndentCallSite = 4,
     continuationIndentDefnSite = 4
   )
+
   val unitTest40 = unitTest80.copy(maxColumn = 40)
+
+  val configReader: Reader[ScalafmtStyle] = Reader.instance[ScalafmtStyle] {
+    case String2AnyMap(map) =>
+      map.get("style") match {
+        case Some(baseStyle) =>
+          val noStyle = map.-("style")
+          ScalafmtStyle.availableStyles.get(baseStyle.toString.toLowerCase) match {
+            case Some(s) => s.reader.read(noStyle)
+            case None =>
+              val alternatives = ScalafmtStyle.activeStyles.keys.mkString(", ")
+              Left(new IllegalArgumentException(
+                s"Unknown style name $baseStyle. Expected one of: $alternatives"))
+          }
+        case None => ScalafmtStyle.default.reader.read(map)
+      }
+  }
 }

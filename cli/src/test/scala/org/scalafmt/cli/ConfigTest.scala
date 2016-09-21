@@ -12,9 +12,31 @@ import org.scalatest.FunSuite
 
 class ConfigTest extends FunSuite {
 
+  test("style = ...") {
+    import org.scalafmt.Config
+    val Left(err) = Config.fromHocon("style = foobar")
+    assert(
+      "Unknown style name foobar. Expected one of: Scala.js, IntelliJ, default, defaultWithAlign" == err.getMessage)
+
+    val overrideOne = Config.fromHocon("""
+                                         |style = defaultWithAlign
+                                         |maxColumn = 100
+                                         |""".stripMargin)
+    assert(
+      Right(ScalafmtStyle.defaultWithAlign.copy(maxColumn = 100)) == overrideOne)
+    assert(
+      Right(ScalafmtStyle.intellij) == Config.fromHocon("style = intellij"))
+    assert(
+      Right(ScalafmtStyle.scalaJs) == Config.fromHocon("style = Scala.js"))
+    assert(
+      Right(ScalafmtStyle.defaultWithAlign) == Config.fromHocon(
+        "style = defaultWithAlign"))
+  }
+
   test("hocon2class") {
     val config =
       """
+        |style = intellij
         |maxColumn = 4000
         |reformatDocstrings = false
         |scalaDocs = false
@@ -51,8 +73,7 @@ class ConfigTest extends FunSuite {
         |keepSelectChainLineBreaks = true
         |alwaysNewlineBeforeLambdaParameters = true
       """.stripMargin
-    val Right(obtained) =
-      Hocon2Class.gimmeClass[ScalafmtStyle](config, ScalafmtStyle.default.reader)
+    val Right(obtained) = org.scalafmt.Config.fromHocon(config)
     assert(obtained.maxColumn == 4000)
     assert(obtained.assumeStandardLibraryStripMargin)
     assert(obtained.reformatDocstrings == false)

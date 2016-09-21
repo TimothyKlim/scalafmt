@@ -38,8 +38,8 @@ class ConfigReader extends scala.annotation.StaticAnnotation {
                     case Right(e) => e.asInstanceOf[T]
                     case Left(e: java.lang.IllegalArgumentException) =>
                       val msg =
-                        "Error reading field " + path +
-                        " on class " + $classLit +
+                        "Error reading field '" + path +
+                        "' on class " + $classLit +
                         ". Expected argument of type " + default.getClass.getSimpleName +
                         ". Obtained " + e.getMessage()
                       throw _root_.metaconfig.ConfigError(msg)
