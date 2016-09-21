@@ -74,7 +74,7 @@ class FormatWriter(formatOps: FormatOps) {
 
   val leadingPipeSpace = Pattern.compile("\n *\\|", Pattern.MULTILINE)
   private def formatMarginizedString(token: Token, indent: Int): String = {
-    if (!style.alignStripMarginStrings) token.syntax
+    if (!style.assumeStandardLibraryStripMargin) token.syntax
     else if (token.is[Interpolation.Part] ||
              isMarginizedString(token)) {
       val firstChar: Char = token match {

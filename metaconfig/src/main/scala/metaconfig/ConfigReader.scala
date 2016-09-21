@@ -93,7 +93,6 @@ class ConfigReader extends scala.annotation.StaticAnnotation {
       val newStats = stats ++ Seq(fieldsDef) ++ Seq(typReader)
       val newTemplate = template"""
         { ..$earlyStats } with ..$ctorcalls { $param => ..$newStats }
-
                                   """
       val result =
         q"""

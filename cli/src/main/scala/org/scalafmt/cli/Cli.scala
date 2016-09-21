@@ -202,7 +202,7 @@ object Cli {
         c.copy(style = c.style.copy(scalaDocs = false))
       } text s"Sets scalaDocs to false. See ScalafmtStyle scaladoc."
       opt[Boolean]("assumeStandardLibraryStripMargin") action { (bool, c) =>
-        c.copy(style = c.style.copy(alignStripMarginStrings = bool))
+        c.copy(style = c.style.copy(assumeStandardLibraryStripMargin = bool))
       } text s"See ScalafmtStyle scaladoc."
       opt[Boolean]("alignByOpenParenCallSite") action { (bool, c) =>
         c.copy(style = c.style.copy(alignByOpenParenCallSite = bool))

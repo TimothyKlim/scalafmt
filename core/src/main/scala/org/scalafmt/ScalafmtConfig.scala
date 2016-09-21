@@ -17,7 +17,7 @@ trait ScalafmtConfig {
     maxColumn = 80,
     reformatDocstrings = true,
     scalaDocs = true,
-    alignStripMarginStrings = false,
+    assumeStandardLibraryStripMargin = false,
     binPackArguments = false,
     binPackParameters = false,
     configStyleArguments = true,
@@ -105,7 +105,7 @@ trait ScalafmtConfig {
   }.map { case (k, v) => k.toLowerCase -> v }
 
   // TODO(olafur) move these elsewhere.
-  val testing = default.copy(alignStripMarginStrings = false)
+  val testing = default.copy(assumeStandardLibraryStripMargin = false)
   val unitTest80 = testing.copy(
     maxColumn = 80,
     continuationIndentCallSite = 4,

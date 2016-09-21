@@ -109,7 +109,7 @@ trait HasTests extends FunSuiteLike with FormatAssertions {
         ScalafmtStyle.unitTest80
           .copy(maxColumn = 40, alignByOpenParenCallSite = false)
       case "stripMargin" =>
-        ScalafmtStyle.unitTest80.copy(alignStripMarginStrings = true)
+        ScalafmtStyle.unitTest80.copy(assumeStandardLibraryStripMargin = true)
       case "spaces" =>
         ScalafmtStyle.unitTest80.copy(spacesInImportCurlyBraces = true,
                                       spaceAfterTripleEquals = true)

@@ -16,7 +16,7 @@ import sourcecode.Text
   * @param scalaDocs Only used if @reformatDocstrings is true. If true,
   *                  reformats docstrings to use scaladoc style docstring,
   *                  otherwise use javadoc style.
-  * @param alignStripMarginStrings If true, the margin character | is treated
+  * @param assumeStandardLibraryStripMargin If true, the margin character | is treated
   *                                as the new indentation in multiline strings
   *                                ending with `.stripMargin`.
   * @param binPackArguments If true, will fit as many arguments on each line,
@@ -158,13 +158,8 @@ case class ScalafmtStyle(
     // Note: default style is right below
     maxColumn: Int,
     reformatDocstrings: Boolean,
-
-
     scalaDocs: Boolean,
-
-
-
-    alignStripMarginStrings: Boolean,
+    assumeStandardLibraryStripMargin: Boolean,
     binPackArguments: Boolean,
     binPackParameters: Boolean,
     configStyleArguments: Boolean,
@@ -192,12 +187,17 @@ case class ScalafmtStyle(
     keepSelectChainLineBreaks: Boolean,
     alwaysNewlineBeforeLambdaParameters: Boolean
 ) {
+  final lazy val x = 2
 
-  implicit val indentReader: Reader[IndentOperator] = indentOperator.reader
-  implicit val alignReader: Reader[AlignToken] = AlignToken.default.head.reader
+  implicit val indentReader: Reader[
+    IndentOperator] = indentOperator.reader
+  implicit val alignReader: Reader[AlignToken] =
+    AlignToken.default.head.reader
 
   lazy val alignMap: Map[String, Regex] =
-    alignTokens.map(x => x.code -> x.owner.r).toMap
+    alignTokens
+      .map(x => x.code -> x.owner.r)
+      .toMap
   ValidationOps.assertNonNegative(
     continuationIndentCallSite,
     continuationIndentDefnSite

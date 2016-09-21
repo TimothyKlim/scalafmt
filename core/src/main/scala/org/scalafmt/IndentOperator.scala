@@ -6,7 +6,6 @@ import metaconfig.ConfigReader
 case class IndentOperator(include: String, exclude: String) {
   val includeRegexp = include.r
   val excludeRegexp = exclude.r
-
 }
 
 object IndentOperator {

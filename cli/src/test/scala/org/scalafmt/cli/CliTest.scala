@@ -44,7 +44,7 @@ class CliTest extends FunSuite with DiffAssertions {
     scalaDocs = false,
     binPackImportSelectors = false,
     poorMansTrailingCommasInConfigStyle = true,
-    alignStripMarginStrings = false,
+    assumeStandardLibraryStripMargin = false,
     spaceBeforeContextBoundColon = true)
   val expectedConfig = Cli.Config.default.copy(
     debug = true,
