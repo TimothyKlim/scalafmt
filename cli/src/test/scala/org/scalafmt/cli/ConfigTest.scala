@@ -3,6 +3,8 @@ package org.scalafmt.cli
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigValue
+import org.scalafmt.AlignToken
+import org.scalafmt.IndentOperator
 import org.scalafmt.ScalafmtStyle
 import org.scalafmt.hocon.Hocon2Class
 import org.scalafmt.util.LoggerOps._
@@ -35,6 +37,14 @@ class ConfigTest extends FunSuite {
         |binPackParentConstructors = true
         |spaceAfterTripleEquals = true
         |unindentTopLevelOperators = true
+        |alignTokens = [
+        |  {code: "//", owner: ".*"},
+        |  {code: "=>", owner: "Function"},
+        |]
+        |indentOperator: {
+        |  "include" = inc
+        |  exclude = "exclude"
+        |}
         |alignByArrowEnumeratorGenerator = true
         |alignByIfWhileOpenParen = true
         |spaceBeforeContextBoundColon = true
@@ -71,6 +81,15 @@ class ConfigTest extends FunSuite {
     assert(obtained.spaceBeforeContextBoundColon == true)
     assert(obtained.keepSelectChainLineBreaks == true)
     assert(obtained.alwaysNewlineBeforeLambdaParameters == true)
+    assert(
+      obtained.alignTokens ==
+        Set(
+          AlignToken("//", ".*"),
+          AlignToken("=>", "Function")
+        ))
+    assert(obtained.indentOperator == IndentOperator("inc", "exclude"))
+
+    logger.elem(obtained.indentOperator)
   }
 
 }

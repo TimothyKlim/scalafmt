@@ -39,11 +39,11 @@ object Reader {
 
   implicit def setR[T](implicit ev: Reader[T]): Reader[Set[T]] =
     instance[Set[T]] {
-      case lst: Set[_] =>
+      case lst: Seq[_] =>
         val res = lst.map(ev.read)
         val lefts = res.collect { case Left(e) => e }
-        if (lefts.nonEmpty) Left(ConfigErrors(lefts.to[Seq]))
-        else Right(res.collect { case Right(e) => e })
+        if (lefts.nonEmpty) Left(ConfigErrors(lefts))
+        else Right(res.collect({ case Right(e) => e }).to[Set])
     }
 
   // TODO(olafur) generic can build from reader
