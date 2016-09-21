@@ -28,6 +28,13 @@ lazy val buildSettings = Seq(
       Wart.DefaultArguments)
 )
 
+lazy val metaMacroSettings = Seq(
+  libraryDependencies += "org.scalameta" %% "scalameta" % Deps.scalameta,
+  addCompilerPlugin(
+    "org.scalameta" % "paradise" % "3.0.0-M5" cross CrossVersion.full),
+  scalacOptions += "-Xplugin-require:macroparadise"
+)
+
 lazy val compilerOptions = Seq(
   "-deprecation",
   "-encoding",
@@ -113,12 +120,13 @@ lazy val root = project
         |import org.scalafmt._
       """.stripMargin
   )
-  .aggregate(core, cli, benchmarks, scalafmtSbt, macros, readme)
+  .aggregate(core, cli, benchmarks, scalafmtSbt, macros, readme, metaconfig)
   .dependsOn(core)
 
 lazy val core = project
   .settings(allSettings)
   .settings(
+    metaMacroSettings,
     moduleName := "scalafmt-core",
     test in assembly := {
       (test in Test).value
@@ -140,7 +148,7 @@ lazy val core = project
     ),
     addCompilerPlugin(
       "org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
-  )
+  ).dependsOn(metaconfig)
 
 lazy val macros = project
   .settings(allSettings)
@@ -159,7 +167,7 @@ lazy val cli = project
     mainClass in assembly := Some("org.scalafmt.cli.Cli"),
     libraryDependencies ++= Seq(
       "com.github.scopt" %% "scopt" % "3.3.0",
-      "com.typesafe" % "config" % "1.3.0"
+      "com.typesafe"     % "config" % "1.3.0"
     )
   )
   .dependsOn(core % "compile->compile;test->test")
@@ -235,3 +243,14 @@ lazy val readme = scalatex
   )
 
 lazy val sonatypePassword = sys.env.getOrElse("SONATYPE_PW", "")
+
+
+lazy val metaconfig = project.settings(
+  allSettings,
+  metaMacroSettings,
+  publishSettings,
+  moduleName := "metaconfig",
+  libraryDependencies ++= Seq(
+    "org.scalatest" %% "scalatest" % Deps.scalatest % "test"
+  )
+)

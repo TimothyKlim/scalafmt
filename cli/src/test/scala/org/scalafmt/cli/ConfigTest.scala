@@ -84,17 +84,19 @@ class ConfigTest extends FunSuite {
   test("map[string, any]") {
     val config =
       """
-        |a: {
-        | b = 2
-        | hoobar: {
-        |   k = 1
-        | }
-        | d = 3
-        |}
-        |c = true
-        |k = [
-        |  { i: 2 },
-        |  { i: 2, y: 3}
+        |[
+        |  a: {
+        |   b = 2
+        |   hoobar: {
+        |     k = 1
+        |   }
+        |   d = 3
+        |  }
+        |  c = true
+        |  k = [
+        |    { i: 2 },
+        |    { i: 2, y: 3}
+        |  ]
         |]
         |
       """.stripMargin

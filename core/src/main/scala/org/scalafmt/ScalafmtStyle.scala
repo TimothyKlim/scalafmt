@@ -2,6 +2,7 @@ package org.scalafmt
 
 import scala.util.matching.Regex
 
+import metaconfig.ConfigReader
 import org.scalafmt.util.HasStringKeys
 import org.scalafmt.util.LoggerOps
 import org.scalafmt.util.ValidationOps
