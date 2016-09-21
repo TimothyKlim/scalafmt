@@ -25,12 +25,8 @@ class ConfigReader extends scala.annotation.StaticAnnotation {
       val argLits = params.map(x => Lit(x.name.syntax))
       val classLit = Lit(typ.syntax)
       val constructor = Ctor.Ref.Name(typ.syntax)
-      println(typ.structure)
       val bind = Term.Name("x")
       val patTyped = Pat.Typed(Pat.Var.Term(bind), typ.asInstanceOf[Pat.Type])
-//      case $patTyped => $bind
-      println(patTyped.structure)
-      println(patTyped.syntax)
       q"""val reader = new _root_.metaconfig.Reader[$typ] {
           override def read(any: Any): _root_.metaconfig.Result[$typ] = {
             any match {
@@ -56,12 +52,11 @@ class ConfigReader extends scala.annotation.StaticAnnotation {
                   val msg = "Invalid fields: " + invalidFields.mkString(", ")
                   Left(_root_.metaconfig.ConfigError(msg))
                 } else {
-//                try {
-                    import _root_.metaconfig.Reader._
-                    Right(new $constructor(..$defaultArgs))
-//                } catch {
-//                  case _root_.scala.util.control.NonFatal(e) => Left(e)
-//                }
+                  try {
+                      Right(new $constructor(..$defaultArgs))
+                  } catch {
+                    case _root_.scala.util.control.NonFatal(e) => Left(e)
+                  }
                 }
               case els =>
                 println(${typ.syntax})
@@ -98,7 +93,6 @@ class ConfigReader extends scala.annotation.StaticAnnotation {
         q"""
             ..$mods class $tname[..$tparams] ..$mods2 (...$paramss) extends $newTemplate
          """
-//      println(result)
       result
     }
     defn match {

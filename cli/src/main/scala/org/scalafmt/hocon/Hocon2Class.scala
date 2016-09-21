@@ -1,6 +1,8 @@
 package org.scalafmt.hocon
 
 import com.typesafe.config.Config
+import com.typesafe.config.ConfigException
+import com.typesafe.config.ConfigFactory
 
 object Hocon2Class {
   private def config2map(config: Config): Map[String, Any] = {
@@ -22,6 +24,15 @@ object Hocon2Class {
     val map = config2map(config)
     println(map)
     reader.read(map)
+  }
+
+  def gimmeClass[T](configStr: String,
+                    reader: metaconfig.Reader[T]): metaconfig.Result[T] = {
+    try {
+      gimmeClass[T](ConfigFactory.parseString(configStr), reader)
+    } catch {
+      case e: ConfigException => Left(e)
+    }
   }
 
 }

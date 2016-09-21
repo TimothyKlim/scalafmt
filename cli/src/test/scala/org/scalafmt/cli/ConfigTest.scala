@@ -38,8 +38,8 @@ class ConfigTest extends FunSuite {
         |spaceAfterTripleEquals = true
         |unindentTopLevelOperators = true
         |alignTokens = [
-        |  {code: "//", owner: ".*"},
         |  {code: "=>", owner: "Function"},
+        |  {code: "//"},
         |]
         |indentOperator: {
         |  "include" = inc
@@ -51,9 +51,8 @@ class ConfigTest extends FunSuite {
         |keepSelectChainLineBreaks = true
         |alwaysNewlineBeforeLambdaParameters = true
       """.stripMargin
-    val s = ConfigFactory.parseString(config)
     val Right(obtained) =
-      Hocon2Class.gimmeClass[ScalafmtStyle](s, ScalafmtStyle.default.reader)
+      Hocon2Class.gimmeClass[ScalafmtStyle](config, ScalafmtStyle.default.reader)
     assert(obtained.maxColumn == 4000)
     assert(obtained.assumeStandardLibraryStripMargin)
     assert(obtained.reformatDocstrings == false)

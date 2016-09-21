@@ -187,17 +187,12 @@ case class ScalafmtStyle(
     keepSelectChainLineBreaks: Boolean,
     alwaysNewlineBeforeLambdaParameters: Boolean
 ) {
-  final lazy val x = 2
-
-  implicit val indentReader: Reader[
-    IndentOperator] = indentOperator.reader
-  implicit val alignReader: Reader[AlignToken] =
-    AlignToken.default.head.reader
+  protected[scalafmt] val fallbackAlign = new AlignToken("<empty>", ".*")
+  implicit val indentReader: Reader[IndentOperator] = indentOperator.reader
+  implicit val alignReader: Reader[AlignToken] = fallbackAlign.reader
 
   lazy val alignMap: Map[String, Regex] =
-    alignTokens
-      .map(x => x.code -> x.owner.r)
-      .toMap
+    alignTokens.map(x => x.code -> x.owner.r).toMap
   ValidationOps.assertNonNegative(
     continuationIndentCallSite,
     continuationIndentDefnSite
