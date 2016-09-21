@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.scalafmt.AlignToken
+import org.scalafmt.ContinuationIndent
 import org.scalafmt.Error.MisformattedFile
 import org.scalafmt.FormatResult
 import org.scalafmt.IndentOperator
@@ -184,10 +185,12 @@ object Cli {
         c.copy(style = c.style.copy(maxColumn = col))
       } text s"See ScalafmtStyle scaladoc."
       opt[Int]("continuationIndentCallSite") action { (n, c) =>
-        c.copy(style = c.style.copy(continuationIndentCallSite = n))
+        c.copy(style = c.style.copy(
+          continuationIndent = c.style.continuationIndent.copy(callSite = n)))
       } text s"See ScalafmtStyle scaladoc."
       opt[Int]("continuationIndentDefnSite") action { (n, c) =>
-        c.copy(style = c.style.copy(continuationIndentDefnSite = n))
+        c.copy(style = c.style.copy(
+          continuationIndent = c.style.continuationIndent.copy(defnSite = n)))
       } text s"See ScalafmtStyle scaladoc."
       opt[Boolean]("formatSbtFiles") action { (b, c) =>
         c.copy(sbtFiles = b)
@@ -266,10 +269,10 @@ object Cli {
         val rewriteTokens = Map(gimmeStrPairs(str): _*)
         c.copy(style = c.style.copy(rewriteTokens = rewriteTokens))
       } text s"""(experimental) Same syntax as alignTokens. For example,
-              |
-              |        --rewriteTokens ⇒;=>,←;<-
-              |
-              |        will rewrite unicode arrows to their ascii equivalents.""".stripMargin
+                |
+                |        --rewriteTokens ⇒;=>,←;<-
+                |
+                |        will rewrite unicode arrows to their ascii equivalents.""".stripMargin
       opt[Boolean]("alignMixedOwners") action { (bool, c) =>
         c.copy(style = c.style.copy(alignMixedOwners = bool))
       } text s"See ScalafmtConfig scaladoc."
@@ -277,53 +280,54 @@ object Cli {
         c.copy(style = c.style.copy(keepSelectChainLineBreaks = bool))
       } text s"See ScalafmtConfig scaladoc."
       opt[Boolean]("alwaysNewlineBeforeLambdaParameters") action { (bool, c) =>
-        c.copy(style = c.style.copy(alwaysNewlineBeforeLambdaParameters = bool))
+        c.copy(
+          style = c.style.copy(alwaysNewlineBeforeLambdaParameters = bool))
       } text s"See ScalafmtConfig scaladoc."
       opt[Seq[String]]("alignTokens") action { (tokens, c) =>
         val alignsTokens =
           gimmeStrPairs(tokens).map((AlignToken.apply _).tupled)
         c.copy(style = c.style.copy(alignTokens = alignsTokens.toSet))
       } text s"""(experimental). Comma separated sequence of tokens to align by. Each
-              |        token is a ; separated pair of strings where the first string
-              |        is the string literal value of the token to align by and the
-              |        second string is a regular expression matching the class
-              |        name of the scala.meta.Tree that "owns" that token.
-              |
-              |        Examples:
-              |
-              |        1. => in pattern matching
-              |        =>;Case
-              |
-              |        2. Align by -> tuples.
-              |        ->;Term.ApplyInfix
-              |
-              |        NOTE. the closest owner of -> is actually Term.Name,
-              |        but in case Term.Name we match against the parent of Term.Name.
-              |
-              |        3. Assignment of def var/val/def
-              |        =;Defn.(Va(l|r)|Def)
-              |
-              |        4. Comment owned by whatever tree
-              |        //;.*
-              |
-              |        To use all default alignment rules, use --style defaultWithAlign.
-              |        To pick your favirite alignment rules, set --alignTokens <value> to:
-              |        =>;Case,=;Defn.(Va(l|r)|Def),->;Term.ApplyInfix,//;.*
-              |
-              |        It's best to play around with scala.meta in a console to
-              |        understand which regexp you should use for the owner.
-              |""".stripMargin
+                |        token is a ; separated pair of strings where the first string
+                |        is the string literal value of the token to align by and the
+                |        second string is a regular expression matching the class
+                |        name of the scala.meta.Tree that "owns" that token.
+                |
+                |        Examples:
+                |
+                |        1. => in pattern matching
+                |        =>;Case
+                |
+                |        2. Align by -> tuples.
+                |        ->;Term.ApplyInfix
+                |
+                |        NOTE. the closest owner of -> is actually Term.Name,
+                |        but in case Term.Name we match against the parent of Term.Name.
+                |
+                |        3. Assignment of def var/val/def
+                |        =;Defn.(Va(l|r)|Def)
+                |
+                |        4. Comment owned by whatever tree
+                |        //;.*
+                |
+                |        To use all default alignment rules, use --style defaultWithAlign.
+                |        To pick your favirite alignment rules, set --alignTokens <value> to:
+                |        =>;Case,=;Defn.(Va(l|r)|Def),->;Term.ApplyInfix,//;.*
+                |
+                |        It's best to play around with scala.meta in a console to
+                |        understand which regexp you should use for the owner.
+                |""".stripMargin
 
       opt[Boolean]("spaceBeforeContextBoundColon") action { (bool, c) =>
         c.copy(style = c.style.copy(spaceBeforeContextBoundColon = bool))
       } text s"See ScalafmtConfig scaladoc."
 
       note(s"""
-            |Examples:
-            |
-            |$usageExamples
-            |
-            |Please file bugs to https://github.com/olafurpg/scalafmt/issues
+              |Examples:
+              |
+              |$usageExamples
+              |
+              |Please file bugs to https://github.com/olafurpg/scalafmt/issues
       """.stripMargin)
     }
   lazy val parser = scoptParser
@@ -407,8 +411,8 @@ object Cli {
       if (errors.nonEmpty) {
         val list = errors.map(x => s"${x.filename}: ${x.error}")
         logger.error(s"""Found ${errors.length} errors:
-             |${list.mkString("\n")}
-             |""".stripMargin)
+                        |${list.mkString("\n")}
+                        |""".stripMargin)
 
       }
 

@@ -4,6 +4,7 @@ import java.io.File
 import java.nio.file.Files
 
 import org.scalafmt.AlignToken
+import org.scalafmt.ContinuationIndent
 import org.scalafmt.Error.MisformattedFile
 import org.scalafmt.IndentOperator
 import org.scalafmt.ScalafmtOptimizer
@@ -39,8 +40,7 @@ class CliTest extends FunSuite with DiffAssertions {
     maxColumn = 99,
     alignMixedOwners = true,
     unindentTopLevelOperators = true,
-    continuationIndentCallSite = 2,
-    continuationIndentDefnSite = 3,
+    continuationIndent = ContinuationIndent(2, 3),
     scalaDocs = false,
     binPackImportSelectors = false,
     poorMansTrailingCommasInConfigStyle = true,

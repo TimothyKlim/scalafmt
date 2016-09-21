@@ -29,8 +29,7 @@ trait Settings {
     alignByOpenParenDefnSite = true,
     binPackDotChains = false,
     noNewlinesBeforeJsNative = false,
-    continuationIndentCallSite = 2,
-    continuationIndentDefnSite = 4,
+    continuationIndent = ContinuationIndent(callSite = 2, defnSite = 4),
     alignMixedOwners = false,
     alignTokens = Set.empty[AlignToken],
     binPackImportSelectors = false,
@@ -49,13 +48,11 @@ trait Settings {
     alignByIfWhileOpenParen = true,
     spaceBeforeContextBoundColon = false,
     keepSelectChainLineBreaks = false,
-    alwaysNewlineBeforeLambdaParameters = false,
-    style = BaseStyle.default
+    alwaysNewlineBeforeLambdaParameters = false
   )
 
   val intellij = default.copy(
-    continuationIndentCallSite = 2,
-    continuationIndentDefnSite = 2,
+    continuationIndent = ContinuationIndent(2, 2),
     alignByOpenParenCallSite = false,
     configStyleArguments = false,
     danglingParentheses = true
@@ -79,8 +76,7 @@ trait Settings {
     noNewlinesBeforeJsNative = true,
     binPackArguments = true,
     binPackParameters = true,
-    continuationIndentCallSite = 4,
-    continuationIndentDefnSite = 4,
+    continuationIndent = ContinuationIndent(4, 4),
     binPackImportSelectors = true,
     allowNewlineBeforeColonInMassiveReturnTypes = false,
     scalaDocs = false,
@@ -112,8 +108,7 @@ trait Settings {
   val testing = default.copy(assumeStandardLibraryStripMargin = false)
   val unitTest80 = testing.copy(
     maxColumn = 80,
-    continuationIndentCallSite = 4,
-    continuationIndentDefnSite = 4
+    continuationIndent = ContinuationIndent(4, 4)
   )
 
   val unitTest40 = unitTest80.copy(maxColumn = 40)

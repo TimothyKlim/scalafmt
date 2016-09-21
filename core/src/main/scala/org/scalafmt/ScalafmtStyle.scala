@@ -168,8 +168,7 @@ case class ScalafmtStyle(
     danglingParentheses: Boolean,
     alignByOpenParenCallSite: Boolean,
     alignByOpenParenDefnSite: Boolean,
-    continuationIndentCallSite: Int,
-    continuationIndentDefnSite: Int,
+    continuationIndent: ContinuationIndent,
     alignMixedOwners: Boolean,
     alignTokens: Set[AlignToken],
     binPackImportSelectors: Boolean,
@@ -188,7 +187,10 @@ case class ScalafmtStyle(
     alwaysNewlineBeforeLambdaParameters: Boolean,
     style: BaseStyle = BaseStyle.default
 ) {
+  def continuationIndentCallSite: Int = continuationIndent.callSite
+  def continuationIndentDefnSite: Int = continuationIndent.defnSite
   protected[scalafmt] val fallbackAlign = new AlignToken("<empty>", ".*")
+  implicit val contIndentReader: Reader[ContinuationIndent] = continuationIndent.reader
   implicit val indentReader: Reader[IndentOperator] = indentOperator.reader
   implicit val alignReader: Reader[AlignToken] = fallbackAlign.reader
 

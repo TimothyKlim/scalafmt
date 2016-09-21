@@ -18,10 +18,9 @@ class ConfigTest extends FunSuite {
     assert(
       "Unknown style name foobar. Expected one of: Scala.js, IntelliJ, default, defaultWithAlign" == err.getMessage)
 
-    val overrideOne = Config.fromHocon("""
-                                         |style = defaultWithAlign
-                                         |maxColumn = 100
-                                         |""".stripMargin)
+    val overrideOne = Config.fromHocon("""|style = defaultWithAlign
+                                          |maxColumn = 100
+                                          |""".stripMargin)
     assert(
       Right(ScalafmtStyle.defaultWithAlign.copy(maxColumn = 100)) == overrideOne)
     assert(
@@ -49,8 +48,10 @@ class ConfigTest extends FunSuite {
         |danglingParentheses = true
         |alignByOpenParenCallSite = true
         |alignByOpenParenDefnSite = true
-        |continuationIndentCallSite = 3
-        |continuationIndentDefnSite = 3
+        |continuationIndent: {
+        |  callSite = 3
+        |  defnSite = 5
+        |}
         |alignMixedOwners = true
         |binPackImportSelectors = true
         |spacesInImportCurlyBraces = true
@@ -87,7 +88,7 @@ class ConfigTest extends FunSuite {
     assert(obtained.alignByOpenParenCallSite == true)
     assert(obtained.alignByOpenParenDefnSite == true)
     assert(obtained.continuationIndentCallSite == 3)
-    assert(obtained.continuationIndentDefnSite == 3)
+    assert(obtained.continuationIndentDefnSite == 5)
     assert(obtained.alignMixedOwners == true)
     assert(obtained.binPackImportSelectors == true)
     assert(obtained.spacesInImportCurlyBraces == true)
