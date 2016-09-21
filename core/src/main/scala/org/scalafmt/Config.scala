@@ -4,7 +4,7 @@ import scala.util.matching.Regex
 
 import metaconfig.ConfigReader
 
-@ConfigReader
+//@ConfigReader
 case class Config(
     // Note: default style is right below
     maxColumn: Int,

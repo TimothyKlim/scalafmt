@@ -3,7 +3,6 @@ package org.scalafmt
 import scala.util.matching.Regex
 
 import metaconfig.ConfigReader
-import org.scalafmt.util.HasStringKeys
 import org.scalafmt.util.LoggerOps
 import org.scalafmt.util.ValidationOps
 import sourcecode.Text
@@ -178,15 +177,14 @@ case class ScalafmtStyle(
     binPackParentConstructors: Boolean,
     spaceAfterTripleEquals: Boolean,
     unindentTopLevelOperators: Boolean,
-    indentOperatorsIncludeFilter: Regex,
-    indentOperatorsExcludeFilter: Regex,
+    indentOperator: IndentOperator,
     rewriteTokens: Map[String, String],
     alignByArrowEnumeratorGenerator: Boolean,
     alignByIfWhileOpenParen: Boolean,
     spaceBeforeContextBoundColon: Boolean,
     keepSelectChainLineBreaks: Boolean,
     alwaysNewlineBeforeLambdaParameters: Boolean
-) extends HasStringKeys {
+) {
 
   lazy val alignMap: Map[String, Regex] =
     alignTokens.map(x => x.code -> x.owner.r).toMap
@@ -196,11 +194,23 @@ case class ScalafmtStyle(
   )
 }
 
+case class IndentOperator(include: String, exclude: String) {
+  val includeRegexp = include.r
+  val excludeRegexp = exclude.r
+}
+
+object IndentOperator {
+  val default = IndentOperator(ScalafmtStyle.indentOperatorsIncludeDefault,
+    ScalafmtStyle.indentOperatorsExcludeDefault)
+  val akka = IndentOperator(ScalafmtStyle.indentOperatorsIncludeAkka,
+    ScalafmtStyle.indentOperatorsExcludeAkka)
+}
+
 object ScalafmtStyle {
-  val indentOperatorsIncludeAkka = "^.*=$".r
-  val indentOperatorsExcludeAkka = "^$".r
-  val indentOperatorsIncludeDefault = ".*".r
-  val indentOperatorsExcludeDefault = "^(&&|\\|\\|)$".r
+  val indentOperatorsIncludeAkka = "^.*=$"
+  val indentOperatorsExcludeAkka = "^$"
+  val indentOperatorsIncludeDefault = ".*"
+  val indentOperatorsExcludeDefault = "^(&&|\\|\\|)$"
 
   val default = ScalafmtStyle(
     maxColumn = 80,
@@ -226,8 +236,10 @@ object ScalafmtStyle {
     binPackParentConstructors = false,
     spaceAfterTripleEquals = false,
     unindentTopLevelOperators = false,
-    indentOperatorsIncludeFilter = indentOperatorsIncludeDefault,
-    indentOperatorsExcludeFilter = indentOperatorsExcludeDefault,
+    indentOperator = IndentOperator(
+      include = indentOperatorsIncludeDefault,
+      exclude = indentOperatorsExcludeDefault
+    ),
     alignByArrowEnumeratorGenerator = false,
     rewriteTokens = Map.empty[String, String],
     alignByIfWhileOpenParen = true,
