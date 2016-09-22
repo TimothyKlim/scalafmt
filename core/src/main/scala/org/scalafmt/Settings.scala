@@ -28,13 +28,17 @@ trait Settings {
     ),
     configStyleArguments = true,
     danglingParentheses = false,
-    alignByOpenParenCallSite = true,
-    alignByOpenParenDefnSite = true,
+    align = Align(
+      openParenCallSite = true,
+      openParenDefnSite = true,
+      mixedOwners = false,
+      tokens = Set.empty[AlignToken],
+      arrowEnumeratorGenerator = false,
+      ifWhileOpenParen = true
+    ),
     binPackDotChains = false,
     noNewlinesBeforeJsNative = false,
     continuationIndent = ContinuationIndent(callSite = 2, defnSite = 4),
-    alignMixedOwners = false,
-    alignTokens = Set.empty[AlignToken],
     binPackImportSelectors = false,
     spacesInImportCurlyBraces = false,
     poorMansTrailingCommasInConfigStyle = false,
@@ -45,9 +49,7 @@ trait Settings {
       include = indentOperatorsIncludeDefault,
       exclude = indentOperatorsExcludeDefault
     ),
-    alignByArrowEnumeratorGenerator = false,
     rewriteTokens = Map.empty[String, String],
-    alignByIfWhileOpenParen = true,
     spaceBeforeContextBoundColon = false,
     keepSelectChainLineBreaks = false,
     alwaysNewlineBeforeLambdaParameters = false
@@ -55,14 +57,16 @@ trait Settings {
 
   val intellij = default.copy(
     continuationIndent = ContinuationIndent(2, 2),
-    alignByOpenParenCallSite = false,
+    align = default.align.copy(openParenCallSite = false),
     configStyleArguments = false,
     danglingParentheses = true
   )
 
   def addAlign(style: ScalafmtStyle) = style.copy(
-    alignMixedOwners = true,
-    alignTokens = AlignToken.default
+    align = style.align.copy(
+      mixedOwners = true,
+      tokens = AlignToken.default
+    )
   )
 
   val defaultWithAlign = addAlign(default)
@@ -85,9 +89,11 @@ trait Settings {
     binPackImportSelectors = true,
     allowNewlineBeforeColonInMassiveReturnTypes = false,
     scalaDocs = false,
-    alignByArrowEnumeratorGenerator = false,
-    alignTokens = Set(AlignToken.caseArrow),
-    alignByIfWhileOpenParen = false
+    align = default.align.copy(
+      arrowEnumeratorGenerator = false,
+      tokens = Set(AlignToken.caseArrow),
+      ifWhileOpenParen = false
+    )
   )
 
   /**

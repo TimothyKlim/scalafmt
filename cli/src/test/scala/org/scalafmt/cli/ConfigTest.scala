@@ -49,29 +49,31 @@ class ConfigTest extends FunSuite {
         |binPackDotChains = true
         |noNewlinesBeforeJsNative = true
         |danglingParentheses = true
-        |alignByOpenParenCallSite = true
-        |alignByOpenParenDefnSite = true
         |continuationIndent: {
         |  callSite = 3
         |  defnSite = 5
         |}
-        |alignMixedOwners = true
         |binPackImportSelectors = true
         |spacesInImportCurlyBraces = true
         |poorMansTrailingCommasInConfigStyle = true
         |allowNewlineBeforeColonInMassiveReturnTypes = true
         |spaceAfterTripleEquals = true
         |unindentTopLevelOperators = true
-        |alignTokens = [
-        |  {code: "=>", owner: "Function"},
-        |  {code: "//"},
-        |]
+        |align: {
+        |  tokens = [
+        |    {code: "=>", owner: "Function"},
+        |    {code: "//"},
+        |  ]
+        |  arrowEnumeratorGenerator = true
+        |  ifWhileOpenParen = true
+        |  openParenCallSite = true
+        |  openParenDefnSite = true
+        |  mixedOwners = true
+        |}
         |indentOperator: {
         |  "include" = inc
         |  exclude = exclude
         |}
-        |alignByArrowEnumeratorGenerator = true
-        |alignByIfWhileOpenParen = true
         |spaceBeforeContextBoundColon = true
         |keepSelectChainLineBreaks = true
         |alwaysNewlineBeforeLambdaParameters = true
@@ -87,11 +89,11 @@ class ConfigTest extends FunSuite {
     assert(obtained.binPackDotChains == true)
     assert(obtained.noNewlinesBeforeJsNative == true)
     assert(obtained.danglingParentheses == true)
-    assert(obtained.alignByOpenParenCallSite == true)
-    assert(obtained.alignByOpenParenDefnSite == true)
+    assert(obtained.align.openParenCallSite == true)
+    assert(obtained.align.openParenDefnSite == true)
     assert(obtained.continuationIndentCallSite == 3)
     assert(obtained.continuationIndentDefnSite == 5)
-    assert(obtained.alignMixedOwners == true)
+    assert(obtained.align.mixedOwners == true)
     assert(obtained.binPackImportSelectors == true)
     assert(obtained.spacesInImportCurlyBraces == true)
     assert(obtained.poorMansTrailingCommasInConfigStyle == true)
@@ -99,13 +101,13 @@ class ConfigTest extends FunSuite {
     assert(obtained.binPackParentConstructors == true)
     assert(obtained.spaceAfterTripleEquals == true)
     assert(obtained.unindentTopLevelOperators == true)
-    assert(obtained.alignByArrowEnumeratorGenerator == true)
-    assert(obtained.alignByIfWhileOpenParen == true)
+    assert(obtained.align.arrowEnumeratorGenerator == true)
+    assert(obtained.align.ifWhileOpenParen == true)
     assert(obtained.spaceBeforeContextBoundColon == true)
     assert(obtained.keepSelectChainLineBreaks == true)
     assert(obtained.alwaysNewlineBeforeLambdaParameters == true)
     assert(
-      obtained.alignTokens ==
+      obtained.align.tokens ==
         Set(
           AlignToken("//", ".*"),
           AlignToken("=>", "Function")

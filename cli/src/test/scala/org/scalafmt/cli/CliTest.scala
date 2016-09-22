@@ -30,29 +30,6 @@ class CliTest extends FunSuite with DiffAssertions {
                    |    "h")
                    |}
                  """.stripMargin
-  val expectedStyle = ScalafmtStyle.default.copy(
-    rewriteTokens = Map(
-      "=>" -> "⇒",
-      "<-" -> "←"
-    ),
-    indentOperator = IndentOperator.akka,
-    reformatDocstrings = false,
-    maxColumn = 99,
-    alignMixedOwners = true,
-    unindentTopLevelOperators = true,
-    continuationIndent = ContinuationIndent(2, 3),
-    scalaDocs = false,
-    binPackImportSelectors = false,
-    poorMansTrailingCommasInConfigStyle = true,
-    assumeStandardLibraryStripMargin = false,
-    spaceBeforeContextBoundColon = true)
-  val expectedConfig = Cli.Config.default.copy(
-    debug = true,
-    runner = ScalafmtRunner.statement.copy(
-      optimizer = ScalafmtOptimizer.default.copy(bestEffortEscape = true)),
-    style = expectedStyle,
-    files = Seq(new File("foo")),
-    inPlace = true)
   val args = Array(
     "--poorMansTrailingCommasInConfigStyle",
     "true",
@@ -91,7 +68,8 @@ class CliTest extends FunSuite with DiffAssertions {
 
   test("cli parses args") {
     val obtained = Cli.getConfig(args)
-    assert(obtained.contains(expectedConfig))
+    ???
+//    assert(obtained.contains(expectedConfig))
   }
 
   test("cli parses style from config file") {
@@ -103,10 +81,11 @@ class CliTest extends FunSuite with DiffAssertions {
       """.stripMargin
     Files.write(tmpFile, contents.getBytes)
     val externalConfigArgs = Array("--config", tmpFile.toAbsolutePath.toString)
-    val expectedCustomStyle = expectedStyle.copy(
-      alignTokens = Set(AlignToken("#", "Template"), AlignToken("//", ".*")))
-    val obtained = Cli.getConfig(externalConfigArgs)
-    assert(obtained.exists(_.style == expectedCustomStyle))
+    ???
+//    val expectedCustomStyle = expectedStyle.copy(
+//      alignTokens = Set(AlignToken("#", "Template"), AlignToken("//", ".*")))
+//    val obtained = Cli.getConfig(externalConfigArgs)
+//    assert(obtained.exists(_.style == expectedCustomStyle))
   }
 
   test("scalafmt -i --file tmpFile") {

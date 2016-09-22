@@ -165,11 +165,8 @@ case class ScalafmtStyle(
     noNewlinesBeforeJsNative: Boolean,
     danglingParentheses: Boolean,
     binPack: BinPack,
-    alignByOpenParenCallSite: Boolean,
-    alignByOpenParenDefnSite: Boolean,
     continuationIndent: ContinuationIndent,
-    alignMixedOwners: Boolean,
-    alignTokens: Set[AlignToken],
+    align: Align,
     binPackImportSelectors: Boolean,
     spacesInImportCurlyBraces: Boolean,
     poorMansTrailingCommasInConfigStyle: Boolean,
@@ -178,8 +175,6 @@ case class ScalafmtStyle(
     unindentTopLevelOperators: Boolean,
     indentOperator: IndentOperator,
     rewriteTokens: Map[String, String],
-    alignByArrowEnumeratorGenerator: Boolean,
-    alignByIfWhileOpenParen: Boolean,
     spaceBeforeContextBoundColon: Boolean,
     keepSelectChainLineBreaks: Boolean,
     alwaysNewlineBeforeLambdaParameters: Boolean,
@@ -192,14 +187,13 @@ case class ScalafmtStyle(
 
   def continuationIndentCallSite: Int = continuationIndent.callSite
   def continuationIndentDefnSite: Int = continuationIndent.defnSite
-  protected[scalafmt] val fallbackAlign = new AlignToken("<empty>", ".*")
   implicit val contIndentReader: Reader[ContinuationIndent] = continuationIndent.reader
   implicit val indentReader: Reader[IndentOperator] = indentOperator.reader
-  implicit val alignReader: Reader[AlignToken] = fallbackAlign.reader
   implicit val binPackReader: Reader[BinPack] = binPack.reader
+  implicit val alignReader: Reader[Align] = align.reader
 
   lazy val alignMap: Map[String, Regex] =
-    alignTokens.map(x => x.code -> x.owner.r).toMap
+    align.tokens.map(x => x.code -> x.owner.r).toMap
   ValidationOps.assertNonNegative(
     continuationIndentCallSite,
     continuationIndentDefnSite

@@ -583,8 +583,8 @@ class Router(formatOps: FormatOps) {
         }
         val skipOpenParenAlign = {
           !isTuple && {
-            (defnSite && !style.alignByOpenParenDefnSite) ||
-            (!defnSite && !style.alignByOpenParenCallSite)
+            (defnSite && !style.align.openParenDefnSite) ||
+            (!defnSite && !style.align.openParenCallSite)
           }
         }
 
@@ -931,7 +931,7 @@ class Router(formatOps: FormatOps) {
         val close = matchingParentheses(hash(open))
         val penalizeNewlines = penalizeNewlineByNesting(open, close)
         val indent: Length =
-          if (style.alignByIfWhileOpenParen) StateColumn
+          if (style.align.ifWhileOpenParen) StateColumn
           else style.continuationIndentCallSite
         Seq(
           Split(NoSplit, 0)
@@ -1141,7 +1141,7 @@ class Router(formatOps: FormatOps) {
           if leftOwner.is[Enumerator.Generator] =>
         val lastToken = leftOwner.tokens.last
         val indent: Length =
-          if (style.alignByArrowEnumeratorGenerator) StateColumn
+          if (style.align.arrowEnumeratorGenerator) StateColumn
           else Num(0)
         Seq(
           // Either everything fits in one line or break on =>

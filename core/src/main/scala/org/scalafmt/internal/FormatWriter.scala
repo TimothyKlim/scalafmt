@@ -187,7 +187,7 @@ class FormatWriter(formatOps: FormatOps) {
   def key(token: Token): Int = {
     val ownerKey = {
       val className = owners(token).getClass.getName
-      if (style.alignMixedOwners)
+      if (style.align.mixedOwners)
         FormatWriter.ownerCategory.getOrElse(className, className)
       else className
     }
@@ -232,7 +232,7 @@ class FormatWriter(formatOps: FormatOps) {
   // imperative and error-prone right now.
   def alignmentTokens(locations: Array[FormatLocation],
                       style: ScalafmtStyle): Map[FormatToken, Int] = {
-    if (style.alignTokens.isEmpty) Map.empty[FormatToken, Int]
+    if (style.align.tokens.isEmpty) Map.empty[FormatToken, Int]
     else {
       val finalResult = Map.newBuilder[FormatToken, Int]
       var i = 0

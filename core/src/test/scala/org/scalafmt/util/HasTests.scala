@@ -27,6 +27,7 @@ import org.scalafmt.IndentOperator
 
 trait HasTests extends FunSuiteLike with FormatAssertions {
   import LoggerOps._
+  import ScalafmtStyle._
   val scalafmtRunner = ScalafmtRunner.default.copy(
     debug = true,
     maxStateVisits = 150000,
@@ -103,12 +104,18 @@ trait HasTests extends FunSuiteLike with FormatAssertions {
       case "scalajs" => ScalafmtStyle.scalaJs
       case "dangling" =>
         ScalafmtStyle.unitTest80.copy(maxColumn = 40,
-                                      alignByOpenParenCallSite = false,
+                                      align = unitTest80.align.copy(
+                                        openParenCallSite = false
+                                      ),
                                       danglingParentheses = true,
                                       configStyleArguments = false)
       case "noAlign" =>
-        ScalafmtStyle.unitTest80
-          .copy(maxColumn = 40, alignByOpenParenCallSite = false)
+        ScalafmtStyle.unitTest80.copy(
+          maxColumn = 40,
+          align = unitTest80.align.copy(
+            openParenCallSite = false
+          )
+        )
       case "stripMargin" =>
         ScalafmtStyle.unitTest80.copy(assumeStandardLibraryStripMargin = true)
       case "spaces" =>
@@ -117,9 +124,11 @@ trait HasTests extends FunSuiteLike with FormatAssertions {
       case "align" => ScalafmtStyle.addAlign(ScalafmtStyle.unitTest80)
       case "alignNoSpace" =>
         ScalafmtStyle.unitTest80.copy(
-          alignTokens = Set(
-            AlignToken(":", ".*"),
-            AlignToken(",", ".*")
+          align = ScalafmtStyle.unitTest80.align.copy(
+            tokens = Set(
+              AlignToken(":", ".*"),
+              AlignToken(",", ".*")
+            )
           )
         )
       case "parentConstructors" =>
@@ -129,7 +138,8 @@ trait HasTests extends FunSuiteLike with FormatAssertions {
         )
       case "alignByArrowEnumeratorGenerator" =>
         ScalafmtStyle.unitTest40.copy(
-          alignByArrowEnumeratorGenerator = true
+          align = ScalafmtStyle.unitTest40.align
+            .copy(arrowEnumeratorGenerator = true)
         )
       case "noIndentOperators" =>
         ScalafmtStyle.unitTest80.copy(unindentTopLevelOperators = true,
