@@ -14,7 +14,7 @@ case class ConfigErrors(es: Seq[Throwable])
 class ConfigReader extends scala.annotation.StaticAnnotation {
 
   inline def apply(defn: Any): Any = meta {
-    def genReader(typ: Type, params: Seq[Term.Param]): Defn.Val = {
+    def genReader(typ: Type, params: Seq[Term.Param] = Seq.empty): Defn.Val = {
       def defaultArgs: Seq[Term.Arg] = {
         params.collect {
           case Term.Param(_, pName: Term.Name, Some(pTyp: Type), _) =>
@@ -35,7 +35,7 @@ class ConfigReader extends scala.annotation.StaticAnnotation {
                 def get[T](path: String, default: T)(implicit
                     ev: _root_.metaconfig.Reader[T]) = {
                   ev.read(map.getOrElse(path, default)) match {
-                    case Right(e) => e.asInstanceOf[T]
+                    case Right(e) => e
                     case Left(e: java.lang.IllegalArgumentException) =>
                       val msg =
                         "Error reading field '" + path +
@@ -70,14 +70,14 @@ class ConfigReader extends scala.annotation.StaticAnnotation {
     }
 
     def expandClass(c: Defn.Class): Stat = {
-      val q"..$mods class $tname[..$tparams] ..$mods2 (...$paramss) extends $template" = c
+      val q"..$mods class $tname[..$tparams] ..$mods2 (...$paramss) extends $template" =
+        c
       val template"{ ..$earlyStats } with ..$ctorcalls { $param => ..$stats }" =
         template
       val flatParams = paramss.flatten
       val fields: Seq[Term.Tuple] = flatParams.collect {
-        case x if x.name.isInstanceOf[Term.Name] =>
-          val nameLit = Lit(x.name.syntax)
-          q"($nameLit, ${x.name.asInstanceOf[Term.Name]})"
+        case Term.Param(_, name: Term.Name, _, _) =>
+          q"(${Lit(name.syntax)}, $name)"
       }
       val fieldsDef: Stat = {
         val body =

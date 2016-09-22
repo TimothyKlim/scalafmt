@@ -66,7 +66,7 @@ class ConfigTest extends FunSuite {
         |]
         |indentOperator: {
         |  "include" = inc
-        |  exclude = "exclude"
+        |  exclude = exclude
         |}
         |alignByArrowEnumeratorGenerator = true
         |alignByIfWhileOpenParen = true
