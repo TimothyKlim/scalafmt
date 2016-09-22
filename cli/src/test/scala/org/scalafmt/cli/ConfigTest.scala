@@ -40,8 +40,11 @@ class ConfigTest extends FunSuite {
         |reformatDocstrings = false
         |scalaDocs = false
         |assumeStandardLibraryStripMargin = true
-        |binPackArguments = true
-        |binPackParameters = true
+        |binPack: {
+        |  defnSite = true
+        |  callSite = true
+        |  parentConstructors = true
+        |}
         |configStyleArguments = true
         |binPackDotChains = true
         |noNewlinesBeforeJsNative = true
@@ -57,7 +60,6 @@ class ConfigTest extends FunSuite {
         |spacesInImportCurlyBraces = true
         |poorMansTrailingCommasInConfigStyle = true
         |allowNewlineBeforeColonInMassiveReturnTypes = true
-        |binPackParentConstructors = true
         |spaceAfterTripleEquals = true
         |unindentTopLevelOperators = true
         |alignTokens = [

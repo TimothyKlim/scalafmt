@@ -22,6 +22,7 @@ import scala.meta.Tree
 import scala.meta.parsers.Parse
 import scala.meta.parsers.ParseException
 
+import org.scalafmt.BinPack
 import org.scalafmt.IndentOperator
 
 trait HasTests extends FunSuiteLike with FormatAssertions {
@@ -123,7 +124,7 @@ trait HasTests extends FunSuiteLike with FormatAssertions {
         )
       case "parentConstructors" =>
         ScalafmtStyle.unitTest80.copy(
-          binPackParentConstructors = true,
+          binPack = BinPack(false, false, parentConstructors = true),
           maxColumn = 40
         )
       case "alignByArrowEnumeratorGenerator" =>

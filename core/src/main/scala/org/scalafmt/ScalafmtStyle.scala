@@ -160,12 +160,11 @@ case class ScalafmtStyle(
     reformatDocstrings: Boolean,
     scalaDocs: Boolean,
     assumeStandardLibraryStripMargin: Boolean,
-    binPackArguments: Boolean,
-    binPackParameters: Boolean,
     configStyleArguments: Boolean,
     binPackDotChains: Boolean,
     noNewlinesBeforeJsNative: Boolean,
     danglingParentheses: Boolean,
+    binPack: BinPack,
     alignByOpenParenCallSite: Boolean,
     alignByOpenParenDefnSite: Boolean,
     continuationIndent: ContinuationIndent,
@@ -175,7 +174,6 @@ case class ScalafmtStyle(
     spacesInImportCurlyBraces: Boolean,
     poorMansTrailingCommasInConfigStyle: Boolean,
     allowNewlineBeforeColonInMassiveReturnTypes: Boolean,
-    binPackParentConstructors: Boolean,
     spaceAfterTripleEquals: Boolean,
     unindentTopLevelOperators: Boolean,
     indentOperator: IndentOperator,
@@ -187,12 +185,18 @@ case class ScalafmtStyle(
     alwaysNewlineBeforeLambdaParameters: Boolean,
     style: BaseStyle = BaseStyle.default
 ) {
+
+  def binPackParentConstructors: Boolean = binPack.parentConstructors
+  def binPackArguments: Boolean =  binPack.callSite
+  def binPackParameters: Boolean = binPack.defnSite
+
   def continuationIndentCallSite: Int = continuationIndent.callSite
   def continuationIndentDefnSite: Int = continuationIndent.defnSite
   protected[scalafmt] val fallbackAlign = new AlignToken("<empty>", ".*")
   implicit val contIndentReader: Reader[ContinuationIndent] = continuationIndent.reader
   implicit val indentReader: Reader[IndentOperator] = indentOperator.reader
   implicit val alignReader: Reader[AlignToken] = fallbackAlign.reader
+  implicit val binPackReader: Reader[BinPack] = binPack.reader
 
   lazy val alignMap: Map[String, Regex] =
     alignTokens.map(x => x.code -> x.owner.r).toMap

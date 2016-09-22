@@ -217,7 +217,9 @@ object Cli {
         c.copy(style = c.style.copy(alignByArrowEnumeratorGenerator = bool))
       } text s"See ScalafmtStyle scaladoc."
       opt[Boolean]("binPackParentConstructors") action { (bool, c) =>
-        c.copy(style = c.style.copy(binPackParentConstructors = bool))
+        c.copy(
+          style = c.style.copy(
+            binPack = c.style.binPack.copy(parentConstructors = bool)))
       } text s"See ScalafmtStyle scaladoc."
       opt[Boolean]("spacesInImportCurlyBraces") action { (bool, c) =>
         c.copy(style = c.style.copy(spacesInImportCurlyBraces = bool))

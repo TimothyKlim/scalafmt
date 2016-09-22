@@ -21,8 +21,11 @@ trait Settings {
     reformatDocstrings = true,
     scalaDocs = true,
     assumeStandardLibraryStripMargin = false,
-    binPackArguments = false,
-    binPackParameters = false,
+    binPack = BinPack(
+      callSite = false,
+      defnSite = false,
+      parentConstructors = false
+    ),
     configStyleArguments = true,
     danglingParentheses = false,
     alignByOpenParenCallSite = true,
@@ -36,7 +39,6 @@ trait Settings {
     spacesInImportCurlyBraces = false,
     poorMansTrailingCommasInConfigStyle = false,
     allowNewlineBeforeColonInMassiveReturnTypes = true,
-    binPackParentConstructors = false,
     spaceAfterTripleEquals = false,
     unindentTopLevelOperators = false,
     indentOperator = IndentOperator(
@@ -74,13 +76,15 @@ trait Settings {
     */
   val scalaJs = default.copy(
     noNewlinesBeforeJsNative = true,
-    binPackArguments = true,
-    binPackParameters = true,
+    binPack = BinPack(
+      defnSite = true,
+      callSite = true,
+      parentConstructors = true
+    ),
     continuationIndent = ContinuationIndent(4, 4),
     binPackImportSelectors = true,
     allowNewlineBeforeColonInMassiveReturnTypes = false,
     scalaDocs = false,
-    binPackParentConstructors = true,
     alignByArrowEnumeratorGenerator = false,
     alignTokens = Set(AlignToken.caseArrow),
     alignByIfWhileOpenParen = false
